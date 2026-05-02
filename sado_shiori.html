@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佐渡逍遙｜二日記</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Old+Mincho:wght@400;500;700;900&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --ink: #1f1a17;
+    --paper: #f3ece0;
+    --paper-dark: #e8dfce;
+    --indigo: #1c3a5e;
+    --indigo-deep: #14283f;
+    --vermillion: #c14a3a;
+    --gold: #b88a3a;
+    --gold-soft: #d4af6a;
+    --moss: #4a5c3e;
+    --rule: rgba(31, 26, 23, 0.18);
+    --rule-strong: rgba(31, 26, 23, 0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Shippori Mincho', 'Zen Old Mincho', serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.85;
+    font-size: 16px;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(rgba(184, 138, 58, 0.05) 1px, transparent 1px),
+      radial-gradient(rgba(28, 58, 94, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px, 60px 60px;
+    background-position: 0 0, 20px 30px;
+  }
+
+  /* === Cover === */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px 24px 24px;
+    position: relative;
+    background: linear-gradient(180deg, #f3ece0 0%, #ede4d2 100%);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border: 1px solid var(--rule);
+    border-image: none;
+    pointer-events: none;
+  }
+
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: 22px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+
+  .cover-stamp {
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    width: 64px;
+    height: 64px;
+    border: 2px solid var(--vermillion);
+    color: var(--vermillion);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transform: rotate(-8deg);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    z-index: 2;
+  }
+  .cover-stamp span:first-child { font-size: 14px; }
+
+  .cover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px 8px 0;
+    z-index: 1;
+  }
+
+  .cover-meta {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink);
+    opacity: 0.6;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .cover-title-area {
+    text-align: center;
+    padding: 24px 0;
+    z-index: 1;
+    animation: fadeUp 1.2s ease-out;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cover-eyebrow {
+    font-family: 'Klee One', serif;
+    font-size: 13px;
+    color: var(--vermillion);
+    letter-spacing: 0.3em;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .cover-title {
+    font-size: clamp(56px, 16vw, 120px);
+    font-weight: 800;
+    line-height: 0.95;
+    color: var(--indigo-deep);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .cover-title-en {
+    font-family: 'Klee One', serif;
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0.7;
+    letter-spacing: 0.5em;
+    margin-bottom: 32px;
+  }
+
+  .cover-subtitle {
+    font-size: clamp(18px, 5vw, 24px);
+    color: var(--vermillion);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    display: inline-block;
+    min-width: 240px;
+  }
+
+  .cover-info {
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .cover-info-block {
+    border-top: 2px solid var(--ink);
+    padding-top: 12px;
+  }
+
+  .cover-info-label {
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.6;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
+  }
+
+  .cover-info-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--indigo-deep);
+  }
+
+  .cover-members {
+    border-top: 2px solid var(--ink);
+    padding: 16px;
+    margin: 16px;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .cover-members-label {
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.7;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+
+  .cover-member-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .member-slot {
+    border-bottom: 1px dotted var(--rule-strong);
+    padding-bottom: 6px;
+    font-family: 'Klee One', serif;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.5;
+    text-align: center;
+    min-height: 28px;
+  }
+
+  /* === Map Section === */
+  .map-section {
+    background: var(--paper);
+    padding: 56px 24px 64px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .map-section-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  #leaflet-map {
+    height: 480px;
+    width: 100%;
+    border: 1px solid var(--rule-strong);
+    margin-top: 24px;
+    background: #f5f0e8;
+    box-shadow: 0 4px 16px rgba(31, 26, 23, 0.08);
+  }
+
+  .map-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .legend-marker {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 2px solid white;
+    flex-shrink: 0;
+  }
+
+  .map-tip {
+    margin-top: 12px;
+    font-family: 'Klee One', serif;
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0.7;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  /* Custom Leaflet popup styling to match aesthetic */
+  .leaflet-popup-content-wrapper {
+    border-radius: 0 !important;
+    background: var(--paper) !important;
+    box-shadow: 0 4px 16px rgba(31, 26, 23, 0.2) !important;
+    border: 1px solid var(--rule-strong);
+  }
+  .leaflet-popup-content {
+    margin: 12px 16px !important;
+    font-family: 'Shippori Mincho', serif !important;
+    color: var(--ink) !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+  }
+  .leaflet-popup-content strong {
+    color: var(--indigo-deep);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .leaflet-popup-tip {
+    background: var(--paper) !important;
+  }
+  .leaflet-popup-close-button {
+    color: var(--ink) !important;
+    opacity: 0.5;
+  }
+
+  /* Permanent labels for key spots */
+  .permanent-label {
+    background: rgba(31, 26, 23, 0.88) !important;
+    color: var(--paper) !important;
+    border: none !important;
+    border-radius: 2px !important;
+    padding: 3px 9px !important;
+    font-family: 'Shippori Mincho', serif !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+    white-space: nowrap !important;
+  }
+  .permanent-label::before {
+    display: none !important;
+  }
+  .permanent-label.alt {
+    background: rgba(184, 138, 58, 0.92) !important;
+  }
+
+  /* === Common Section === */
+  section {
+    padding: 64px 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .section-num {
+    font-family: 'Klee One', serif;
+    color: var(--vermillion);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 7vw, 40px);
+    font-weight: 700;
+    color: var(--indigo-deep);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    position: relative;
+    padding-left: 20px;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 6px;
+    background: var(--vermillion);
+  }
+
+  .section-subtitle {
+    font-family: 'Klee One', serif;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.6;
+    letter-spacing: 0.2em;
+    margin-bottom: 32px;
+    padding-left: 20px;
+  }
+
+  /* === Overview Map === */
+  .overview {
+    background: var(--indigo-deep);
+    color: var(--paper);
+    padding: 56px 24px;
+    margin: 0;
+    max-width: none;
+  }
+
+  .overview-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .overview .section-num,
+  .overview .section-subtitle {
+    color: var(--gold-soft);
+    opacity: 1;
+  }
+
+  .overview .section-title {
+    color: var(--paper);
+  }
+  .overview .section-title::before {
+    background: var(--gold);
+  }
+
+  .route-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 32px;
+  }
+
+  .route-step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px dashed rgba(212, 175, 106, 0.3);
+  }
+  .route-step:last-child { border-bottom: none; }
+
+  .route-time {
+    font-family: 'Klee One', serif;
+    font-size: 13px;
+    color: var(--gold-soft);
+    text-align: right;
+    line-height: 1.3;
+  }
+  .route-time strong {
+    color: var(--paper);
+    font-size: 15px;
+    display: block;
+  }
+
+  .route-detail {
+    border-left: 2px solid var(--gold);
+    padding-left: 16px;
+  }
+  .route-detail h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: var(--paper);
+    font-weight: 600;
+  }
+  .route-detail p {
+    font-size: 13px;
+    color: rgba(243, 236, 224, 0.7);
+    line-height: 1.6;
+  }
+
+  /* === Day Schedule === */
+  .day-card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--rule);
+    padding: 24px 20px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--indigo-deep);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+
+  .day-label {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--indigo-deep);
+    letter-spacing: 0.05em;
+  }
+  .day-label small {
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    color: var(--vermillion);
+    margin-left: 8px;
+    letter-spacing: 0.2em;
+  }
+
+  .day-date {
+    font-family: 'Klee One', serif;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 8px;
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 12px;
+    padding: 14px 0;
+    position: relative;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .tl-item:last-child { border-bottom: none; }
+
+  .tl-time {
+    font-family: 'Klee One', serif;
+    font-size: 14px;
+    color: var(--vermillion);
+    font-weight: 600;
+    padding-top: 2px;
+    line-height: 1.4;
+  }
+
+  .tl-content h4 {
+    font-size: 16px;
+    color: var(--indigo-deep);
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .tl-content p {
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.85;
+    line-height: 1.7;
+  }
+
+  .tl-item.highlight {
+    background: linear-gradient(90deg, rgba(193, 74, 58, 0.08) 0%, transparent 60%);
+    margin: 0 -8px;
+    padding: 14px 8px;
+    border-left: 3px solid var(--vermillion);
+  }
+  .tl-item.highlight .tl-content h4::before {
+    content: '★';
+    color: var(--vermillion);
+    margin-right: 6px;
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    color: var(--indigo);
+    text-decoration: none;
+    border-bottom: 1px solid var(--indigo);
+    padding-bottom: 1px;
+    letter-spacing: 0.1em;
+  }
+  .map-link:hover {
+    color: var(--vermillion);
+    border-color: var(--vermillion);
+  }
+
+  /* === Lodging Box === */
+  .lodging-box {
+    background: var(--indigo-deep);
+    color: var(--paper);
+    padding: 16px 20px;
+    margin-top: 16px;
+    position: relative;
+  }
+  .lodging-box::before {
+    content: '宿';
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: var(--vermillion);
+    color: var(--paper);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .lodging-box h4 {
+    font-size: 18px;
+    color: var(--gold-soft);
+    margin: 8px 0 4px;
+    font-weight: 700;
+  }
+  .lodging-box p {
+    font-size: 12px;
+    color: rgba(243, 236, 224, 0.8);
+    line-height: 1.7;
+  }
+  .lodging-box a {
+    color: var(--gold-soft);
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-soft);
+    margin-top: 8px;
+    display: inline-block;
+  }
+
+  /* === Spotlight (gakkogura) === */
+  .spotlight {
+    background: linear-gradient(135deg, #fdf6e6 0%, #f5e9c8 100%);
+    padding: 40px 24px;
+    margin: 32px -24px;
+    border-top: 3px double var(--gold);
+    border-bottom: 3px double var(--gold);
+  }
+
+  .spotlight-label {
+    font-family: 'Klee One', serif;
+    font-size: 12px;
+    color: var(--vermillion);
+    letter-spacing: 0.4em;
+    margin-bottom: 8px;
+  }
+
+  .spotlight h3 {
+    font-size: 28px;
+    color: var(--indigo-deep);
+    font-weight: 800;
+    margin-bottom: 12px;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+  }
+
+  .spotlight-meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 16px;
+    font-size: 13px;
+    margin: 16px 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(184, 138, 58, 0.4);
+  }
+  .spotlight-meta dt {
+    font-family: 'Klee One', serif;
+    color: var(--vermillion);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    padding-top: 3px;
+  }
+  .spotlight-meta dd {
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .spotlight-note {
+    background: rgba(193, 74, 58, 0.08);
+    border-left: 3px solid var(--vermillion);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* === Tips === */
+  .tips {
+    background: var(--paper-dark);
+    padding: 56px 24px;
+  }
+  .tips-inner { max-width: 720px; margin: 0 auto; }
+
+  .tip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .tip-item {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 16px 20px;
+    position: relative;
+    padding-left: 56px;
+  }
+  .tip-item::before {
+    content: attr(data-num);
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    font-family: 'Klee One', serif;
+    font-size: 22px;
+    color: var(--vermillion);
+    font-weight: 600;
+  }
+  .tip-item h4 {
+    font-size: 15px;
+    color: var(--indigo-deep);
+    margin-bottom: 4px;
+  }
+  .tip-item p {
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.85;
+    line-height: 1.7;
+  }
+
+  /* === Contact === */
+  .contact {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px 24px;
+  }
+  .contact-inner { max-width: 720px; margin: 0 auto; }
+  .contact .section-num { color: var(--vermillion); }
+  .contact .section-title { color: var(--paper); }
+  .contact .section-subtitle { color: rgba(243, 236, 224, 0.6); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .contact-item {
+    border: 1px solid rgba(243, 236, 224, 0.2);
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .contact-item h4 {
+    font-size: 14px;
+    color: var(--gold-soft);
+    margin-bottom: 2px;
+  }
+  .contact-item p {
+    font-size: 11px;
+    color: rgba(243, 236, 224, 0.6);
+    font-family: 'Klee One', serif;
+    letter-spacing: 0.05em;
+  }
+  .contact-item a {
+    font-family: 'Klee One', serif;
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    border-left: 1px solid rgba(243, 236, 224, 0.3);
+    padding-left: 12px;
+  }
+
+  /* === Footer === */
+  footer {
+    background: var(--paper);
+    padding: 40px 24px 60px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+  }
+
+  .seal {
+    width: 56px;
+    height: 56px;
+    border: 2px solid var(--vermillion);
+    color: var(--vermillion);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    transform: rotate(-4deg);
+    margin-bottom: 16px;
+  }
+
+  .footer-text {
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.5;
+    letter-spacing: 0.2em;
+    line-height: 1.8;
+  }
+
+  /* === Floating Index (mobile-friendly nav) === */
+  .floating-nav {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-family: 'Klee One', serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .floating-nav a {
+    color: var(--paper);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 20px;
+    transition: background 0.2s;
+  }
+  .floating-nav a:hover {
+    background: var(--vermillion);
+  }
+
+  @media (min-width: 720px) {
+    section { padding: 80px 32px; }
+    .cover-info { padding: 0 24px; }
+    .cover-members { margin: 16px 24px; }
+    .timeline { padding-left: 16px; }
+    .tl-item { grid-template-columns: 80px 1fr; }
+  }
+
+  /* small screens */
+  @media (max-width: 380px) {
+    .cover-stamp { width: 52px; height: 52px; top: 28px; right: 28px; }
+    .cover-info { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================== COVER ======================== -->
+<section class="cover">
+  <div class="cover-stamp">
+    <span>佐渡</span>
+    <span>2026</span>
+  </div>
+
+  <div class="cover-header">
+    <div class="cover-meta">SADO ITINERARY</div>
+    <div class="cover-meta">OBATA · GOLD · TARAI</div>
+  </div>
+
+  <div class="cover-title-area">
+    <span class="cover-eyebrow">―― 一泊二日 三人旅 ――</span>
+    <h1 class="cover-title">佐渡逍遙</h1>
+    <div class="cover-title-en">SADO·SHŌYŌ ／ TWO DAYS</div>
+    <div class="cover-subtitle">學校藏 と 金山と 海風と</div>
+  </div>
+
+  <div class="cover-info">
+    <div class="cover-info-block">
+      <div class="cover-info-label">DATE</div>
+      <div class="cover-info-value">2026.05.15 — 05.18</div>
+    </div>
+    <div class="cover-info-block">
+      <div class="cover-info-label">DESTINATION</div>
+      <div class="cover-info-value">新潟県 佐渡島</div>
+    </div>
+  </div>
+
+  <div class="cover-members">
+    <div class="cover-members-label">MEMBERS ／ 旅人三名</div>
+    <div class="cover-member-slots">
+      <div class="member-slot">　</div>
+      <div class="member-slot">　</div>
+      <div class="member-slot">　</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== OVERVIEW : Travel Route ======================== -->
+<div class="overview">
+  <div class="overview-inner">
+    <div class="section-num">―― 〇一 ／ ROUTE</div>
+    <h2 class="section-title" style="color: var(--paper);">道のり、東京から佐渡へ。</h2>
+    <div class="section-subtitle">夜行バス → カーフェリー → 一泊 → 帰還</div>
+
+    <div class="route-flow">
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/15 木</strong>
+          23:35
+        </div>
+        <div class="route-detail">
+          <h4>バスタ新宿 発</h4>
+          <p>西武バス・新潟13便（3列シート・トイレ付）<br>料金 ¥7,900</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/16 土</strong>
+          05:32
+        </div>
+        <div class="route-detail">
+          <h4>新潟駅前 着 → 新潟港へ</h4>
+          <p>05:45 新潟港 着。フェリーターミナルで朝食調達。</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/16</strong>
+          06:00 → 08:30
+        </div>
+        <div class="route-detail">
+          <h4>佐渡汽船カーフェリー（新潟港 → 両津港）</h4>
+          <p>2等席　¥3,290　所要 2時間30分。船内で仮眠も可。</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/17 日</strong>
+          19:30 → 22:00
+        </div>
+        <div class="route-detail">
+          <h4>佐渡汽船カーフェリー（両津港 → 新潟港）</h4>
+          <p>最終便。乗り遅れ厳禁。両津港着 17:30 までに到着。</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/17</strong>
+          23:25
+        </div>
+        <div class="route-detail">
+          <h4>新潟駅 南口 発</h4>
+          <p>さくら高速バス KR458（4列足元広め・充電可）<br>料金 ¥5,500</p>
+        </div>
+      </div>
+      <div class="route-step">
+        <div class="route-time">
+          <strong>5/18 月</strong>
+          05:24
+        </div>
+        <div class="route-detail">
+          <h4>バスターミナル東京八重洲地下A 着</h4>
+          <p>解散。お疲れさまでした。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== MAP ======================== -->
+<div class="map-section">
+  <div class="map-section-inner">
+    <div class="section-num">―― 〇一.五 ／ MAP</div>
+    <h2 class="section-title">佐渡島内、<br>旅のルート。</h2>
+    <div class="section-subtitle">朱＝1日目　／　藍＝2日目</div>
+
+    <div id="leaflet-map"></div>
+
+    <div class="map-legend">
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #c14a3a;">①</span>
+        <span>1日目（5/16・土）</span>
+      </div>
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #1c3a5e;">①</span>
+        <span>2日目（5/17・日）</span>
+      </div>
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #b88a3a; font-size: 10px;">宿</span>
+        <span>第二候補宿</span>
+      </div>
+    </div>
+
+    <div class="map-tip">▷ マーカーをタップで詳細表示</div>
+  </div>
+</div>
+
+<!-- ======================== DAY 1 ======================== -->
+<section id="day1">
+  <div class="section-num">―― 〇二 ／ DAY ONE</div>
+  <h2 class="section-title">第一日。<br>北の岬と、世界遺産の山。</h2>
+  <div class="section-subtitle">5月16日 土曜　両津 → 北部 → 相川泊</div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-label">五月十六日<small>SAT</small></div>
+      <div class="day-date">DAY 01</div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">08:30</div>
+        <div class="tl-content">
+          <h4>両津港 上陸</h4>
+          <p>レンタカー受取（要・事前予約）。港のターミナルで朝食を調達して出発。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=1633343474753084239" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">10:30</div>
+        <div class="tl-content">
+          <h4>大野亀</h4>
+          <p>標高167mの一枚岩。隣接の大野亀ロッジでランチ可。トビシマカンゾウは見頃前だが景観は圧巻。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=16453244712702386109" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">13:30</div>
+        <div class="tl-content">
+          <h4>尖閣湾 揚島遊園</h4>
+          <p>透明度抜群の入江。グラスボートでカモメに餌やり体験も。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=11240526621484560322" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">14:30</div>
+        <div class="tl-content">
+          <h4>佐渡金山（道遊の割戸）</h4>
+          <p>世界遺産。山頂が真っ二つに割れた象徴的な景観。坑道見学コース 約40分。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=14763232142424289129" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">16:15</div>
+        <div class="tl-content">
+          <h4>北沢浮遊選鉱場跡</h4>
+          <p>蔦に覆われた巨大コンクリート遺構。通称「佐渡のラピュタ」。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=1815666145469172338" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item highlight">
+        <div class="tl-time">17:30</div>
+        <div class="tl-content">
+          <h4>いさりびの宿 道遊 着</h4>
+          <p>チェックイン。日没前に春日崎で日本海に沈む夕日を眺める。夕食は佐渡の海鮮会席。</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="lodging-box">
+      <h4>いさりびの宿 道遊</h4>
+      <p>佐渡市相川鹿伏333-1（春日崎）<br>全室オーシャンビュー・温泉あり<br>TEL 0259-74-3381</p>
+      <a href="http://douyuu.com/" target="_blank">▷ 公式サイト</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== DAY 2 ======================== -->
+<section id="day2">
+  <div class="section-num">―― 〇三 ／ DAY TWO</div>
+  <h2 class="section-title">第二日。<br>學校藏、たらい舟、旧き集落。</h2>
+  <div class="section-subtitle">5月17日 日曜　相川 → 西三川 → 小木 → 両津</div>
+
+  <div class="day-card">
+    <div class="day-header">
+      <div class="day-label">五月十七日<small>SUN</small></div>
+      <div class="day-date">DAY 02</div>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">09:00</div>
+        <div class="tl-content">
+          <h4>いさりびの宿 出発</h4>
+          <p>朝食後チェックアウト。途中、佐渡奉行所跡やきらりうむ佐渡を寄り道してもOK。</p>
+        </div>
+      </div>
+
+      <div class="tl-item highlight">
+        <div class="tl-time">10:45</div>
+        <div class="tl-content">
+          <h4>學校藏（尾畑酒造）</h4>
+          <p>本日の目玉。旧西三川小学校を再生した日本酒の蔵。麹ランチ・利き酒3点セット・絵本に囲まれた図書館・丘から望む真野湾。約2時間滞在。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=287697162859113954" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">13:30</div>
+        <div class="tl-content">
+          <h4>たらい舟（力屋観光汽船）</h4>
+          <p>小木名物。港で約8〜10分の体験乗船。料金 ¥600。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=7712237206303431939" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">14:30</div>
+        <div class="tl-content">
+          <h4>宿根木 集落</h4>
+          <p>重要伝統的建造物群保存地区。船板を使った独特の家並み。三角家は予約制。</p>
+          <a class="map-link" href="https://maps.google.com/?cid=5282701601987620451" target="_blank">▷ 地図</a>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">17:30</div>
+        <div class="tl-content">
+          <h4>両津港 帰着</h4>
+          <p>レンタカー返却。港周辺で軽めの夕食＆お土産。佐渡汽船ターミナル内の売店も充実。</p>
+        </div>
+      </div>
+
+      <div class="tl-item highlight">
+        <div class="tl-time">19:30</div>
+        <div class="tl-content">
+          <h4>カーフェリー乗船 → 帰路</h4>
+          <p>22:00新潟港着 → 23:25バス → 翌05:24東京八重洲地下A着。</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SPOTLIGHT : Gakkogura ======================== -->
+<section style="padding-top: 24px; padding-bottom: 32px;">
+  <div class="spotlight">
+    <div class="spotlight-label">―― SPOTLIGHT</div>
+    <h3>學校藏について</h3>
+    <p style="font-size: 14px; color: var(--ink); line-height: 1.9;">
+      1892年創業の老舗酒造・尾畑酒造が、廃校となった旧西三川小学校を再生した二つ目の蔵。「日本で一番夕日のきれいな小学校」と謳われた木造校舎で、佐渡産の米と再生エネルギーだけを使った酒造りを行っている。図書室には10社の出版社が寄贈した本が並び、丘の上のカフェからは真野湾が一望できる。
+    </p>
+
+    <dl class="spotlight-meta">
+      <dt>住所</dt><dd>佐渡市西三川 1871（旧西三川小学校）</dd>
+      <dt>営業</dt><dd>カフェ：金・土・日 10:00〜16:00（夏季は水〜土も）</dd>
+      <dt>連絡</dt><dd>本社 0259-55-3171／カフェ 090-4327-3614</dd>
+      <dt>WEB</dt><dd><a href="https://www.obata-shuzo.com/home/gakkogura/" target="_blank" style="color: var(--vermillion); border-bottom: 1px solid var(--vermillion); text-decoration: none;">obata-shuzo.com/gakkogura</a></dd>
+    </dl>
+
+    <div class="spotlight-note">
+      <strong>※要確認：</strong> 訪問前に必ず電話で「カフェ営業日」と「見学可否」を確認・予約。3名分の席を押さえておくと安心。
+    </div>
+    <div class="spotlight-note" style="margin-top: 8px;">
+      <strong>※運転当番：</strong> レンタカー運転者は利き酒NG。代わりに麹甘酒・コールドブリューコーヒー・西三川りんごジュースが楽しめる。お酒は購入して帰路で。
+    </div>
+  </div>
+</section>
+
+<!-- ======================== TIPS ======================== -->
+<div class="tips">
+  <div class="tips-inner">
+    <div class="section-num">―― 〇四 ／ NOTES</div>
+    <h2 class="section-title">心覚え。</h2>
+    <div class="section-subtitle">出発前と当日の確認事項</div>
+
+    <div class="tip-list">
+      <div class="tip-item" data-num="01">
+        <h4>レンタカーは必須</h4>
+        <p>佐渡島内のバス本数は限定的。3名なら軽自動車1台で十分。両津港受取・両津港返却で予約しておく。</p>
+      </div>
+      <div class="tip-item" data-num="02">
+        <h4>學校藏は要・事前予約</h4>
+        <p>5月の週末は混雑する可能性あり。電話で見学可否とカフェ予約を済ませておく。</p>
+      </div>
+      <div class="tip-item" data-num="03">
+        <h4>フェリー欠航リスク</h4>
+        <p>5/17朝に運航状況を確認。もし最終便（19:30）が欠航したら夜行バスにも乗れない。万が一に備え新潟駅近くのホテル候補も控えておく。</p>
+      </div>
+      <div class="tip-item" data-num="04">
+        <h4>北部のガソリンに注意</h4>
+        <p>大野亀方面はスタンドが少ない。両津出発前に満タンを推奨。</p>
+      </div>
+      <div class="tip-item" data-num="05">
+        <h4>船酔い対策</h4>
+        <p>新潟〜両津は2時間半。酔いやすい人は早めに酔い止めを。2等は雑魚寝だが、横になれるのでむしろ楽。</p>
+      </div>
+      <div class="tip-item" data-num="06">
+        <h4>夕食前の春日崎</h4>
+        <p>5月の佐渡の日没はおよそ18:50頃。チェックイン後すぐに春日崎に出れば、絶景の夕日が間に合う。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== CONTACT ======================== -->
+<div class="contact">
+  <div class="contact-inner">
+    <div class="section-num">―― 〇五 ／ CONTACTS</div>
+    <h2 class="section-title">緊急連絡先。</h2>
+    <div class="section-subtitle">困った時はこの番号</div>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div>
+          <h4>佐渡汽船 予約センター</h4>
+          <p>運航状況・予約変更</p>
+        </div>
+        <a href="tel:0252456122">025-245-6122</a>
+      </div>
+      <div class="contact-item">
+        <div>
+          <h4>新潟港 総合案内</h4>
+          <p>当日の港案内</p>
+        </div>
+        <a href="tel:0252451234">025-245-1234</a>
+      </div>
+      <div class="contact-item">
+        <div>
+          <h4>いさりびの宿 道遊</h4>
+          <p>宿泊先</p>
+        </div>
+        <a href="tel:0259743381">0259-74-3381</a>
+      </div>
+      <div class="contact-item">
+        <div>
+          <h4>尾畑酒造（學校藏）</h4>
+          <p>事前予約・問い合わせ</p>
+        </div>
+        <a href="tel:0259553171">0259-55-3171</a>
+      </div>
+      <div class="contact-item">
+        <div>
+          <h4>佐渡観光交流機構</h4>
+          <p>島内観光全般</p>
+        </div>
+        <a href="tel:0259275000">0259-27-5000</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="seal">佐渡<br>逍遙</div>
+  <div class="footer-text">
+    SADO ITINERARY 2026<br>
+    良き旅を。
+  </div>
+</footer>
+
+<!-- Floating Nav -->
+<nav class="floating-nav">
+  <a href="#map">Map</a>
+  <a href="#day1">Day 1</a>
+  <a href="#day2">Day 2</a>
+</nav>
+
+<script>
+  // ===== Leaflet Map Init =====
+  if (typeof L === 'undefined') {
+    document.getElementById('leaflet-map').innerHTML =
+      '<div style="padding:40px 24px;text-align:center;font-family:Shippori Mincho,serif;color:#1f1a17;">' +
+      '<p style="font-size:14px;line-height:1.8;">マップの読み込みに失敗しました。<br>' +
+      'インターネット接続を確認するか、ブラウザを再読み込みしてください。</p></div>';
+  } else {
+  const map = L.map('leaflet-map', {
+    scrollWheelZoom: false,
+    tap: true
+  }).setView([38.05, 138.35], 9);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 18
+  }).addTo(map);
+
+  // === Day 1 spots (red) ===
+  const day1Spots = [
+    { num: 1, name: '両津港 出発', coords: [38.0817353, 138.4382932], time: '08:30' },
+    { num: 2, name: '大野亀', coords: [38.3209823, 138.4615786], time: '10:30 / 一枚岩の絶景' },
+    { num: 3, name: '尖閣湾揚島遊園', coords: [38.0936961, 138.2507267], time: '13:30 / グラスボート' },
+    { num: 4, name: '佐渡金山（道遊の割戸）', coords: [38.0410282, 138.2586485], time: '14:30 / 世界遺産' },
+    { num: 5, name: '北沢浮遊選鉱場跡', coords: [38.0365825, 138.2416736], time: '16:15 / 佐渡のラピュタ' },
+    { num: 6, name: 'いさりびの宿 道遊', coords: [38.02005, 138.2251892], time: '17:30 着・宿泊' }
+  ];
+
+  // === Day 2 spots (indigo) ===
+  // 重複場所は微オフセットで重なり回避
+  const day2Spots = [
+    { num: 1, name: 'いさりびの宿 出発', coords: [38.02005, 138.2255892], time: '09:00' },
+    { num: 2, name: '★ 学校蔵', coords: [37.8991441, 138.2901812], time: '10:45 / 約2時間滞在' },
+    { num: 3, name: 'たらい舟（力屋観光汽船）', coords: [37.814675, 138.279547], time: '13:30 / 約10分体験' },
+    { num: 4, name: '宿根木 集落', coords: [37.8112811, 138.2422119], time: '14:30 / 伝統的建造物群' },
+    { num: 5, name: '両津港 帰路', coords: [38.0817353, 138.4386932], time: '17:30 着 → 19:30乗船' }
+  ];
+
+  // === Marker factory ===
+  function createMarker(spot, color, dayLabel) {
+    const html = `<div class="map-pin" style="
+      background: ${color};
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      border: 2.5px solid white;
+      font-family: 'Klee One', serif;
+    ">${spot.num}</div>`;
+
+    const icon = L.divIcon({
+      className: 'custom-pin',
+      html: html,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+      popupAnchor: [0, -16]
+    });
+
+    return L.marker(spot.coords, { icon })
+      .bindPopup(`<strong>${dayLabel} ${spot.num}. ${spot.name}</strong>${spot.time}`);
+  }
+
+  // === Add markers & polylines ===
+  day1Spots.forEach(s => createMarker(s, '#c14a3a', 'Day1').addTo(map));
+  day2Spots.forEach(s => createMarker(s, '#1c3a5e', 'Day2').addTo(map));
+
+  // Routes (実走行ルートではないが、移動の流れの参考として点線で結ぶ)
+  L.polyline(day1Spots.map(s => s.coords), {
+    color: '#c14a3a',
+    weight: 2.5,
+    opacity: 0.6,
+    dashArray: '6, 8'
+  }).addTo(map);
+
+  L.polyline(day2Spots.map(s => s.coords), {
+    color: '#1c3a5e',
+    weight: 2.5,
+    opacity: 0.6,
+    dashArray: '6, 8'
+  }).addTo(map);
+
+  // === 第二候補宿: ゆたかや旅館 ===
+  const yutakaya = {
+    coords: [38.085437, 138.4315984],
+    name: 'ゆたかや旅館',
+    sub: '〈第二候補宿〉佐渡市両津夷新47<br>TEL 0259-27-2242<br>※いさりびの宿が満室の場合の代替'
+  };
+
+  const lodgeIcon = L.divIcon({
+    className: 'custom-pin',
+    html: `<div style="
+      background: #b88a3a;
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      border: 2.5px solid white;
+      font-family: 'Shippori Mincho', serif;
+    ">宿</div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -16]
+  });
+
+  L.marker(yutakaya.coords, { icon: lodgeIcon })
+    .bindPopup(`<strong>${yutakaya.name}</strong>${yutakaya.sub}`)
+    .addTo(map);
+
+  // === 主要拠点に永続ラベル ===
+  const labels = [
+    { text: '両津港', coords: [38.0817353, 138.4382932], direction: 'top', offset: [0, -18], cls: 'permanent-label' },
+    { text: 'いさりびの宿', coords: [38.02005, 138.2251892], direction: 'left', offset: [-18, 0], cls: 'permanent-label' },
+    { text: 'ゆたかや旅館', coords: yutakaya.coords, direction: 'right', offset: [18, 0], cls: 'permanent-label alt' }
+  ];
+
+  labels.forEach(l => {
+    L.tooltip({
+      permanent: true,
+      direction: l.direction,
+      offset: l.offset,
+      className: l.cls
+    })
+    .setContent(l.text)
+    .setLatLng(l.coords)
+    .addTo(map);
+  });
+
+  // Fit bounds to show all
+  const allCoords = [...day1Spots, ...day2Spots, yutakaya.coords].map(s => Array.isArray(s) ? s : s.coords);
+  map.fitBounds(allCoords, { padding: [50, 50] });
+
+  // Click to enable scroll wheel
+  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('mouseout', () => map.scrollWheelZoom.disable());
+  } // end of else block (Leaflet loaded)
+</script>
+
+</body>
+</html>
