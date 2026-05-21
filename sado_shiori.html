@@ -42,6 +42,20 @@
     background-position: 0 0, 20px 30px;
   }
 
+  body.is-loading {
+    overflow: hidden;
+  }
+
+  .main-shell {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  body.cover-done .main-shell {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* === Cover === */
   .cover {
     min-height: 100vh;
@@ -49,9 +63,20 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 32px 24px 24px;
-    position: relative;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
     background: linear-gradient(180deg, #f3ece0 0%, #ede4d2 100%);
     border-bottom: 1px solid var(--rule);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+    box-shadow: 0 18px 46px rgba(31, 26, 23, 0.14);
+  }
+  body.cover-done .cover {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .cover::before {
@@ -227,7 +252,10 @@
   /* === Map Section === */
   .map-section {
     background: var(--paper);
-    padding: 56px 24px 64px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 48px 24px 56px;
     border-top: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
   }
@@ -306,6 +334,14 @@
     color: var(--ink);
     opacity: 0.7;
     letter-spacing: 0.12em;
+  }
+
+  .map-preview-text {
+    display: block;
+    font-size: 12px;
+    color: rgba(31, 26, 23, 0.72);
+    line-height: 1.6;
+    margin: 4px 0 7px;
   }
 
   .map-legend {
@@ -667,6 +703,50 @@
     line-height: 1.9;
     color: rgba(31, 26, 23, 0.78);
   }
+  .album-link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .album-link-card {
+    display: block;
+    color: var(--ink);
+    text-decoration: none;
+    border-top: 2px solid var(--indigo-deep);
+    padding-top: 10px;
+    background: rgba(255, 255, 255, 0.22);
+    transition: transform 0.22s ease, border-color 0.22s ease;
+  }
+  .album-link-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--vermillion);
+  }
+  .album-link-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    border: 1px solid var(--rule);
+    background: var(--paper-dark);
+  }
+  .album-link-card span {
+    display: block;
+    padding-top: 9px;
+  }
+  .album-link-card b {
+    display: block;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--indigo-deep);
+  }
+  .album-link-card small {
+    display: block;
+    font-family: 'Klee One', serif;
+    color: var(--vermillion);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    margin-top: 2px;
+  }
   .spot-album {
     border-top: 1px solid var(--rule-strong);
     padding-top: 24px;
@@ -965,7 +1045,7 @@
   }
 </style>
 </head>
-<body>
+<body class="is-loading">
 
 <!-- ======================== COVER ======================== -->
 <section class="cover">
@@ -1007,10 +1087,51 @@
   </div>
 </section>
 
-<!-- ======================== OVERVIEW : Travel Route ======================== -->
-<div class="overview">
+<main id="main-content" class="main-shell" aria-hidden="true">
+
+<!-- ======================== MAP ======================== -->
+<div class="map-section" id="map">
+  <div class="map-section-inner">
+    <div class="section-num">―― 〇一 ／ MAP</div>
+    <h2 class="section-title">佐渡島内、<br>旅のルート。</h2>
+    <div class="section-subtitle">実際に行った順番で、両津港から両津港へ</div>
+
+    <div class="map-frame">
+      <div id="leaflet-map"></div>
+      <a id="map-photo-preview" class="map-photo-preview" href="albums/gakkogura.html" aria-hidden="true" tabindex="-1">
+        <img id="map-preview-img" src="photo/haiko/P1188132.jpg" alt="">
+        <span class="map-preview-copy">
+          <span id="map-preview-meta" class="map-preview-meta">ALBUM</span>
+          <strong id="map-preview-title" class="map-preview-title">写真アルバム</strong>
+          <span id="map-preview-text" class="map-preview-text">スポットの写真を別ページで見る。</span>
+          <span class="map-preview-action">クリックでアルバムへ</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="map-legend">
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #c14a3a;">①</span>
+        <span>実走ルート</span>
+      </div>
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #1c3a5e;">①</span>
+        <span>學校藏・小木港</span>
+      </div>
+      <div class="map-legend-item">
+        <span class="legend-marker" style="background: #b88a3a; font-size: 10px;">夕</span>
+        <span>夕陽・宿</span>
+      </div>
+    </div>
+
+    <div class="map-tip">▷ マーカーにカーソルをかざすと写真が浮かびます（タップでも表示）</div>
+  </div>
+</div>
+
+<!-- ======================== ROUTE SUMMARY ======================== -->
+<div class="overview" id="route">
   <div class="overview-inner">
-    <div class="section-num">―― 〇一 ／ ACTUAL ROUTE</div>
+    <div class="section-num">―― 〇二 ／ ROUTE LOG</div>
     <h2 class="section-title" style="color: var(--paper);">結局たどった、佐渡の道。</h2>
     <div class="section-subtitle">両津港 → 學校藏 → 小木港 → 夕陽 → 宿 → 両津港</div>
 
@@ -1079,47 +1200,9 @@
   </div>
 </div>
 
-<!-- ======================== MAP ======================== -->
-<div class="map-section" id="map">
-  <div class="map-section-inner">
-    <div class="section-num">―― 〇一.五 ／ MAP</div>
-    <h2 class="section-title">佐渡島内、<br>旅のルート。</h2>
-    <div class="section-subtitle">実際に行った順番で、両津港から両津港へ</div>
-
-    <div class="map-frame">
-      <div id="leaflet-map"></div>
-      <a id="map-photo-preview" class="map-photo-preview" href="#albums" aria-hidden="true">
-        <img id="map-preview-img" src="photo/haiko/P1188132.jpg" alt="">
-        <span class="map-preview-copy">
-          <span id="map-preview-meta" class="map-preview-meta">ALBUM</span>
-          <strong id="map-preview-title" class="map-preview-title">写真アルバム</strong>
-          <span class="map-preview-action">クリックでアルバムへ</span>
-        </span>
-      </a>
-    </div>
-
-    <div class="map-legend">
-      <div class="map-legend-item">
-        <span class="legend-marker" style="background: #c14a3a;">①</span>
-        <span>実走ルート</span>
-      </div>
-      <div class="map-legend-item">
-        <span class="legend-marker" style="background: #1c3a5e;">①</span>
-        <span>學校藏・小木港</span>
-      </div>
-      <div class="map-legend-item">
-        <span class="legend-marker" style="background: #b88a3a; font-size: 10px;">夕</span>
-        <span>夕陽・宿</span>
-      </div>
-    </div>
-
-    <div class="map-tip">▷ マーカーにカーソルをかざすと写真が浮かびます（タップでも表示）</div>
-  </div>
-</div>
-
 <!-- ======================== ROUTE LOG ======================== -->
-<section id="day1">
-  <div class="section-num">―― 〇二 ／ ROUTE LOG</div>
+<section id="route-detail">
+  <div class="section-num">―― 〇三 ／ ROUTE DETAIL</div>
   <h2 class="section-title">実際の一日。<br>學校藏から夕陽まで。</h2>
   <div class="section-subtitle">両津港 → 學校藏 → 小木港 → 春日崎 → 道遊 → 両津港</div>
 
@@ -1259,171 +1342,6 @@
   </div>
 </section>
 
-<!-- ======================== ALBUMS ======================== -->
-<section id="albums" class="album-section">
-  <div class="section-num">―― 〇三 ／ ALBUMS</div>
-  <h2 class="section-title">旅のアルバム。</h2>
-  <div class="section-subtitle">地図の写真から、それぞれの記憶へ</div>
-  <p class="album-lead">マーカーに浮かぶ写真を押すと、この下のスポット別アルバムへ移動する。写真はフォルダ名の読み方に合わせて、旅の流れに沿うように並べた。</p>
-
-  <article id="album-ryotsu" class="spot-album">
-    <div class="album-head">
-      <div>
-        <div class="album-kicker">START / RYOTSU</div>
-        <h3 class="album-title">両津港と、島へ入る時間。</h3>
-      </div>
-      <a class="album-map-link" href="#map">地図へ戻る</a>
-    </div>
-    <p class="album-copy">船で佐渡に渡り、両津港から車で走り出す。<span class="folder-name">hune</span> と <span class="folder-name">drive</span> は、今回のルート全体をつなぐ導入の写真。</p>
-    <div class="album-gallery">
-      <figure class="album-shot wide">
-        <img src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="佐渡へ向かう船の写真" loading="lazy">
-        <figcaption>hune ／ 船で佐渡へ</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/drive/LINE_ALBUM_ありがとう~💖🧤_260520_81.jpg" alt="佐渡島内を車で移動する途中の写真" loading="lazy">
-        <figcaption>drive ／ 島内移動</figcaption>
-      </figure>
-    </div>
-  </article>
-
-  <article id="album-gakkogura" class="spot-album">
-    <div class="album-head">
-      <div>
-        <div class="album-kicker">01 / HAIKO</div>
-        <h3 class="album-title">學校藏。旧い校舎の奥へ。</h3>
-      </div>
-      <a class="album-map-link" href="#map">地図へ戻る</a>
-    </div>
-    <p class="album-copy"><span class="folder-name">haiko</span> は廃校。旧西三川小学校を再生した學校藏の写真として、木造校舎、酒蔵、教室の気配をまとめる。</p>
-    <div class="album-gallery">
-      <figure class="album-shot feature">
-        <img src="photo/haiko/P1188132.jpg" alt="學校藏の校舎の写真" loading="lazy">
-        <figcaption>haiko ／ 旧西三川小学校</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/haiko/LINE_ALBUM_ありがとう~💖🧤_260520_16.jpg" alt="學校藏で撮影した写真" loading="lazy">
-        <figcaption>haiko ／ 校舎の記録</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/haiko/LINE_ALBUM_ありがとう~💖🧤_260520_9.jpg" alt="學校藏の写真" loading="lazy">
-        <figcaption>haiko ／ 廃校の空気</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/haiko/LINE_ALBUM_ありがとう~💖🧤_260520_146.jpg" alt="學校藏の屋内写真" loading="lazy">
-        <figcaption>haiko ／ 屋内</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/haiko/LINE_ALBUM_ありがとう~💖🧤_260520_193.jpg" alt="學校藏で見た風景" loading="lazy">
-        <figcaption>haiko ／ 旅の断片</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/haiko/P1188134.jpg" alt="學校藏の室内の写真" loading="lazy">
-        <figcaption>haiko ／ 尾畑酒造</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/haiko/P1188135.jpg" alt="學校藏で撮影した写真" loading="lazy">
-        <figcaption>haiko ／ 旧小学校</figcaption>
-      </figure>
-    </div>
-  </article>
-
-  <article id="album-ogiko" class="spot-album">
-    <div class="album-head">
-      <div>
-        <div class="album-kicker">02 / OGIKO</div>
-        <h3 class="album-title">小木港。たらい舟の水際。</h3>
-      </div>
-      <a class="album-map-link" href="#map">地図へ戻る</a>
-    </div>
-    <p class="album-copy"><span class="folder-name">ogiko</span> は小木港。たらい舟の体験と、港まわりの光や水面をここに集める。</p>
-    <div class="album-gallery">
-      <figure class="album-shot feature">
-        <img src="photo/ogiko/P1188214.jpg" alt="小木港でのたらい舟の写真" loading="lazy">
-        <figcaption>ogiko ／ たらい舟</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/ogiko/LINE_ALBUM_ありがとう~💖🧤_260520_211.jpg" alt="小木港で撮影した写真" loading="lazy">
-        <figcaption>ogiko ／ 小木港</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/ogiko/P1188138.jpg" alt="たらい舟体験の写真" loading="lazy">
-        <figcaption>ogiko ／ 水際</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/ogiko/LINE_ALBUM_ありがとう~💖🧤_260520_76.jpg" alt="小木港周辺の写真" loading="lazy">
-        <figcaption>ogiko ／ 港まわり</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/ogiko/LINE_ALBUM_ありがとう~💖🧤_260520_49.jpg" alt="小木港の風景写真" loading="lazy">
-        <figcaption>ogiko ／ 海のそば</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/ogiko/LINE_ALBUM_ありがとう~💖🧤_260520_150.jpg" alt="小木港で撮影した風景" loading="lazy">
-        <figcaption>ogiko ／ 旅の水音</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/ogiko/P1188140.jpg" alt="小木港周辺で撮影した写真" loading="lazy">
-        <figcaption>ogiko ／ 港の余韻</figcaption>
-      </figure>
-    </div>
-  </article>
-
-  <article id="album-yuyake" class="spot-album">
-    <div class="album-head">
-      <div>
-        <div class="album-kicker">03 / YUYAKE</div>
-        <h3 class="album-title">宿近くの夕陽。</h3>
-      </div>
-      <a class="album-map-link" href="#map">地図へ戻る</a>
-    </div>
-    <p class="album-copy"><span class="folder-name">yuyake</span> は夕焼け。小木港から北上したあと、宿の近くで見た海と空の時間。</p>
-    <div class="album-gallery">
-      <figure class="album-shot feature">
-        <img src="photo/yuyake/P1188239.jpg" alt="宿近くで見た夕陽の写真" loading="lazy">
-        <figcaption>yuyake ／ 海へ沈む光</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/yuyake/LINE_ALBUM_ありがとう~💖🧤_260520_92.jpg" alt="海に沈む夕陽の写真" loading="lazy">
-        <figcaption>yuyake ／ 海辺</figcaption>
-      </figure>
-      <figure class="album-shot standard">
-        <img src="photo/yuyake/LINE_ALBUM_ありがとう~💖🧤_260520_95.jpg" alt="夕焼け空の写真" loading="lazy">
-        <figcaption>yuyake ／ 夕焼け空</figcaption>
-      </figure>
-    </div>
-  </article>
-
-  <article id="album-yado" class="spot-album">
-    <div class="album-head">
-      <div>
-        <div class="album-kicker">04 / YADO・HOSHI</div>
-        <h3 class="album-title">いさりびの宿と、夜の気配。</h3>
-      </div>
-      <a class="album-map-link" href="#map">地図へ戻る</a>
-    </div>
-    <p class="album-copy"><span class="folder-name">yado</span> は宿、<span class="folder-name">hoshi</span> は星。夕陽のあとに寄った宿と、その周辺に残った夜の記録。</p>
-    <div class="album-gallery">
-      <figure class="album-shot wide">
-        <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="いさりびの宿で撮影した写真" loading="lazy">
-        <figcaption>yado ／ いさりびの宿</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_135.jpg" alt="いさりびの宿の写真" loading="lazy">
-        <figcaption>yado ／ 道遊</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/hoshi/LINE_ALBUM_ありがとう~💖🧤_260520_111.jpg" alt="宿周辺で見た星空の写真" loading="lazy">
-        <figcaption>hoshi ／ 星</figcaption>
-      </figure>
-      <figure class="album-shot wide">
-        <img src="photo/hoshi/LINE_ALBUM_ありがとう~💖🧤_260520_117.jpg" alt="宿周辺の夜空の写真" loading="lazy">
-        <figcaption>hoshi ／ 夜空</figcaption>
-      </figure>
-    </div>
-  </article>
-</section>
-
 <!-- ======================== TIPS ======================== -->
 <div class="tips">
   <div class="tips-inner">
@@ -1460,6 +1378,37 @@
   </div>
 </div>
 
+<!-- ======================== ALBUMS ======================== -->
+<section id="albums" class="album-section">
+  <div class="section-num">―― 〇五 ／ ALBUMS</div>
+  <h2 class="section-title">写真で辿る。</h2>
+  <div class="section-subtitle">スポット別の別ページへ</div>
+  <p class="album-lead">地図の写真カードからも、ここからも各アルバムへ移動できる。メインページは旅の流れを読む場所、アルバムページは写真に浸る場所として分けた。</p>
+
+  <div class="album-link-grid">
+    <a class="album-link-card" href="albums/ryotsu.html">
+      <img src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="船と両津港のアルバム">
+      <span><b>両津港と移動</b><small>hune / drive</small></span>
+    </a>
+    <a class="album-link-card" href="albums/gakkogura.html">
+      <img src="photo/haiko/P1188132.jpg" alt="學校藏のアルバム">
+      <span><b>學校藏</b><small>haiko</small></span>
+    </a>
+    <a class="album-link-card" href="albums/ogiko.html">
+      <img src="photo/ogiko/P1188214.jpg" alt="小木港とたらい舟のアルバム">
+      <span><b>小木港・たらい舟</b><small>ogiko</small></span>
+    </a>
+    <a class="album-link-card" href="albums/yuyake.html">
+      <img src="photo/yuyake/P1188239.jpg" alt="夕陽のアルバム">
+      <span><b>宿近くの夕陽</b><small>yuyake</small></span>
+    </a>
+    <a class="album-link-card" href="albums/yado.html">
+      <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="宿と星のアルバム">
+      <span><b>宿と星</b><small>yado / hoshi</small></span>
+    </a>
+  </div>
+</section>
+
 <!-- ======================== FOOTER ======================== -->
 <footer>
   <div class="seal">佐渡<br>逍遙</div>
@@ -1472,11 +1421,21 @@
 <!-- Floating Nav -->
 <nav class="floating-nav">
   <a href="#map">Map</a>
-  <a href="#day1">Route</a>
+  <a href="#route">Route</a>
   <a href="#albums">Albums</a>
 </nav>
+</main>
 
 <script>
+  // ===== Cover Transition =====
+  window.addEventListener('load', () => {
+    window.setTimeout(() => {
+      document.body.classList.remove('is-loading');
+      document.body.classList.add('cover-done');
+      document.getElementById('main-content')?.setAttribute('aria-hidden', 'false');
+    }, 2400);
+  });
+
   // ===== Leaflet Map Init =====
   if (typeof L === 'undefined') {
     document.getElementById('leaflet-map').innerHTML =
@@ -1503,9 +1462,10 @@
       coords: [38.0817353, 138.4382932],
       detail: '船と島内移動の写真: hune / drive',
       color: '#c14a3a',
-      album: '#album-ryotsu',
+      album: 'albums/ryotsu.html',
       image: 'photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg',
-      preview: 'hune / drive'
+      preview: 'hune / drive',
+      desc: '船で島へ渡り、両津港から旅が始まる。'
     },
     {
       num: 2,
@@ -1513,9 +1473,10 @@
       coords: [37.8991441, 138.2901812],
       detail: '旧西三川小学校。写真フォルダ: haiko',
       color: '#1c3a5e',
-      album: '#album-gakkogura',
+      album: 'albums/gakkogura.html',
       image: 'photo/haiko/P1188132.jpg',
-      preview: 'haiko'
+      preview: 'haiko',
+      desc: '旧小学校の気配が残る、今回の主役スポット。'
     },
     {
       num: 3,
@@ -1523,9 +1484,10 @@
       coords: [37.814675, 138.279547],
       detail: '小木港でたらい舟。写真フォルダ: ogiko',
       color: '#1c3a5e',
-      album: '#album-ogiko',
+      album: 'albums/ogiko.html',
       image: 'photo/ogiko/P1188214.jpg',
-      preview: 'ogiko'
+      preview: 'ogiko',
+      desc: '水際でたらい舟に乗った、小木港の記録。'
     },
     {
       num: 4,
@@ -1533,9 +1495,10 @@
       coords: [38.0183, 138.2229],
       detail: '相川・春日崎周辺。写真フォルダ: yuyake',
       color: '#b88a3a',
-      album: '#album-yuyake',
+      album: 'albums/yuyake.html',
       image: 'photo/yuyake/P1188239.jpg',
-      preview: 'yuyake'
+      preview: 'yuyake',
+      desc: '宿近くで見た、海と空がほどける時間。'
     },
     {
       num: 5,
@@ -1543,9 +1506,10 @@
       coords: [38.02005, 138.2251892],
       detail: '宿と夜空の写真: yado / hoshi',
       color: '#b88a3a',
-      album: '#album-yado',
+      album: 'albums/yado.html',
       image: 'photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg',
-      preview: 'yado / hoshi'
+      preview: 'yado / hoshi',
+      desc: '夕陽のあとに寄った宿と、夜の余韻。'
     },
     {
       num: 6,
@@ -1553,9 +1517,10 @@
       coords: [38.0817353, 138.4386932],
       detail: '宿からそのまま両津港へ移動',
       color: '#c14a3a',
-      album: '#album-ryotsu',
+      album: 'albums/ryotsu.html',
       image: 'photo/drive/LINE_ALBUM_ありがとう~💖🧤_260520_81.jpg',
-      preview: 'drive'
+      preview: 'drive',
+      desc: '島内を横断して、また両津港へ戻る。'
     }
   ];
 
@@ -1563,6 +1528,7 @@
   const previewImg = document.getElementById('map-preview-img');
   const previewMeta = document.getElementById('map-preview-meta');
   const previewTitle = document.getElementById('map-preview-title');
+  const previewText = document.getElementById('map-preview-text');
 
   function showSpotPreview(spot) {
     previewCard.href = spot.album;
@@ -1570,8 +1536,10 @@
     previewImg.alt = `${spot.name}のアルバム写真`;
     previewMeta.textContent = `${String(spot.num).padStart(2, '0')} / ${spot.preview}`;
     previewTitle.textContent = spot.name;
+    previewText.textContent = spot.desc;
     previewCard.classList.add('is-visible');
     previewCard.setAttribute('aria-hidden', 'false');
+    previewCard.setAttribute('tabindex', '0');
   }
 
   // === Marker factory ===
@@ -1645,6 +1613,7 @@
   // Fit bounds to show all
   const allCoords = actualSpots.map(s => s.coords);
   map.fitBounds(allCoords, { padding: [50, 50] });
+  window.setTimeout(() => map.invalidateSize(), 2600);
 
   // Click to enable scroll wheel
   map.on('click', () => map.scrollWheelZoom.enable());
@@ -1653,6 +1622,7 @@
   document.querySelector('.map-frame').addEventListener('mouseleave', () => {
     previewCard.classList.remove('is-visible');
     previewCard.setAttribute('aria-hidden', 'true');
+    previewCard.setAttribute('tabindex', '-1');
   });
   } // end of else block (Leaflet loaded)
 </script>
