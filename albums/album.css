@@ -22,11 +22,17 @@ body {
   line-height: 1.85;
   font-size: 16px;
   min-height: 100vh;
+  animation: albumFadeIn 0.42s ease both;
   background-image:
     radial-gradient(rgba(184, 138, 58, 0.05) 1px, transparent 1px),
     radial-gradient(rgba(28, 58, 94, 0.04) 1px, transparent 1px);
   background-size: 40px 40px, 60px 60px;
   background-position: 0 0, 20px 30px;
+}
+
+@keyframes albumFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 a { color: inherit; }
@@ -83,7 +89,7 @@ a { color: inherit; }
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 26px;
 }
 
 .album-actions a {
@@ -91,10 +97,15 @@ a { color: inherit; }
   text-decoration: none;
   font-size: 12px;
   letter-spacing: 0.12em;
-  padding: 8px 12px;
+  padding: 9px 14px;
   border: 1px solid var(--rule-strong);
   background: rgba(255, 255, 255, 0.28);
   transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.album-actions a::before {
+  content: '←';
+  margin-right: 0.55em;
 }
 
 .album-actions a:hover {
