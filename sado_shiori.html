@@ -35,10 +35,13 @@
     font-family: 'Shippori Mincho', 'Zen Old Mincho', serif;
     background: var(--paper);
     color: var(--ink);
-    line-height: 1.85;
+    line-height: 1.92;
     font-size: 16px;
     height: 100vh;
     overflow: hidden;
+    font-feature-settings: 'palt' 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     background-image:
       radial-gradient(rgba(184, 138, 58, 0.05) 1px, transparent 1px),
       radial-gradient(rgba(28, 58, 94, 0.04) 1px, transparent 1px);
@@ -77,13 +80,18 @@
     scroll-snap-align: start;
     scroll-snap-stop: always;
     position: relative;
-    opacity: 0.62;
-    transform: translateY(12px);
-    transition: opacity 0.45s ease, transform 0.45s ease;
+    opacity: 0.28;
+    transform: translateY(22px);
+    filter: blur(1px);
+    transition:
+      opacity 0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      filter 0.72s ease;
   }
   .story-slide.is-current {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
 
   /* === Cover === */
@@ -146,7 +154,7 @@
     width: 100vw;
     height: 100svh;
     display: grid;
-    grid-template-columns: minmax(360px, 34vw) minmax(640px, 1fr);
+    grid-template-columns: clamp(340px, 40vw, 560px) 1fr;
     gap: 0;
     align-items: stretch;
     position: relative;
@@ -163,7 +171,7 @@
     position: absolute;
     top: clamp(24px, 4vw, 52px);
     bottom: clamp(24px, 4vw, 52px);
-    left: 34vw;
+    left: clamp(340px, 40vw, 560px);
     width: 1px;
     background: linear-gradient(180deg, transparent, rgba(31, 26, 23, 0.22), transparent);
     z-index: 5;
@@ -248,13 +256,14 @@
   }
 
   .cover-title {
-    font-size: clamp(58px, 6.8vw, 112px);
+    font-size: clamp(64px, 7.6vw, 120px);
     font-weight: 800;
-    line-height: 0.92;
+    line-height: 0.94;
     color: var(--indigo-deep);
-    letter-spacing: 0.04em;
-    margin-bottom: 16px;
+    letter-spacing: 0.10em;
+    margin-bottom: 20px;
     position: relative;
+    font-feature-settings: 'palt' 0;
   }
 
   .cover-title-en {
@@ -283,8 +292,8 @@
     max-width: 500px;
     color: rgba(31, 26, 23, 0.72);
     font-size: 14px;
-    line-height: 2;
-    letter-spacing: 0.04em;
+    line-height: 2.1;
+    letter-spacing: 0.06em;
   }
 
   .cover-info {
@@ -404,17 +413,108 @@
     background: rgba(193, 74, 58, 0.62);
   }
 
-  /* === Map Section === */
+  /* === Sado Island silhouette watermark === */
+  .cover-island {
+    position: absolute;
+    right: -4%;
+    top: 50%;
+    transform: translateY(-52%) rotate(-14deg);
+    width: 52%;
+    max-width: 260px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.07;
+  }
+  .cover-island svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    fill: var(--indigo-deep);
+  }
+
+  /* === Cover wave / sea decoration === */
+  .cover-wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 76px;
+    pointer-events: none;
+    z-index: 4;
+    overflow: hidden;
+    opacity: 0.9;
+  }
+  .cover-wave svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* === Cover bird decoration === */
+  .cover-birds {
+    position: absolute;
+    top: clamp(32px, 5vh, 56px);
+    right: clamp(28px, 3.5vw, 52px);
+    width: 64px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.3;
+    color: var(--indigo-deep);
+  }
+  .cover-birds svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* === Tips section wave pattern === */
+  .tips {
+    background: var(--paper-dark);
+    display: flex;
+    align-items: center;
+    padding: 56px clamp(24px, 5vw, 72px);
+    position: relative;
+    overflow: hidden;
+  }
+  .tips::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--sea) 30%, var(--ash-blue) 70%, transparent);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* === Map section enhancement === */
   .map-section {
     background:
       linear-gradient(180deg, rgba(217, 229, 224, 0.54) 0%, rgba(243, 236, 224, 0.96) 38%, var(--paper) 100%);
     display: flex;
     align-items: center;
-    padding: 40px clamp(20px, 4vw, 64px) 44px;
+    padding: 36px clamp(16px, 3vw, 52px) 40px;
     border-top: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
     overflow: hidden;
   }
+
+  /* === Seigaiha-inspired header decoration === */
+  .section-num::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--vermillion);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    opacity: 0.7;
+  }
+
+  /* === Map Section === */
   .map-section::before {
     content: 'SADO ISLAND';
     position: absolute;
@@ -462,14 +562,14 @@
     color: var(--ink);
     text-decoration: none;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(243, 236, 224, 0.96)),
+      linear-gradient(160deg, rgba(255, 255, 255, 0.44) 0%, rgba(243, 236, 224, 0.97) 100%),
       var(--paper);
-    border: 1px solid rgba(31, 26, 23, 0.3);
-    box-shadow: 0 18px 40px rgba(31, 26, 23, 0.2);
+    border: 1px solid rgba(31, 26, 23, 0.28);
+    box-shadow: 0 14px 36px rgba(31, 26, 23, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     opacity: 0;
     pointer-events: none;
-    transform: translateY(14px) rotate(0.35deg);
-    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    transform: translateY(16px) rotate(0.6deg);
+    transition: opacity 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.34s ease;
   }
   .map-photo-preview::before {
     content: '';
@@ -483,8 +583,8 @@
   .map-photo-preview.is-visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0) rotate(0.35deg);
-    box-shadow: 0 24px 54px rgba(31, 26, 23, 0.24);
+    transform: translateY(0) rotate(0.6deg);
+    box-shadow: 0 28px 64px rgba(31, 26, 23, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .map-photo-preview::after {
     content: '';
@@ -649,11 +749,12 @@
     font-size: clamp(28px, 7vw, 40px);
     font-weight: 700;
     color: var(--indigo-deep);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.12em;
     margin-bottom: 8px;
-    line-height: 1.2;
+    line-height: 1.24;
     position: relative;
     padding-left: 20px;
+    font-feature-settings: 'palt' 1;
   }
   .section-title::before {
     content: '';
@@ -749,7 +850,7 @@
   .route-detail p {
     font-size: 13px;
     color: rgba(243, 236, 224, 0.7);
-    line-height: 1.6;
+    line-height: 1.9;
   }
 
   /* === Day Schedule === */
@@ -826,7 +927,7 @@
     font-size: 13px;
     color: var(--ink);
     opacity: 0.85;
-    line-height: 1.7;
+    line-height: 1.92;
   }
 
   .tl-item.highlight {
@@ -914,47 +1015,60 @@
   }
   .album-link-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
   }
   .album-link-card {
     display: block;
     color: var(--ink);
     text-decoration: none;
-    border-top: 2px solid var(--indigo-deep);
-    padding-top: 10px;
-    background: rgba(255, 255, 255, 0.22);
-    transition: transform 0.22s ease, border-color 0.22s ease;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.32s ease;
   }
   .album-link-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--vermillion);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(31, 26, 23, 0.18);
   }
-  .album-link-card img {
+  .album-link-card-img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     display: block;
-    border: 1px solid var(--rule);
-    background: var(--paper-dark);
+    filter: saturate(0.82) contrast(0.96) sepia(0.06);
+    transition: transform 0.44s ease, filter 0.44s ease;
   }
-  .album-link-card span {
-    display: block;
-    padding-top: 9px;
+  .album-link-card:hover .album-link-card-img {
+    transform: scale(1.045);
+    filter: saturate(0.94) contrast(1.0) sepia(0.02);
   }
-  .album-link-card b {
-    display: block;
-    font-size: 15px;
-    line-height: 1.45;
-    color: var(--indigo-deep);
+  .album-link-card-body {
+    padding: 13px 15px 15px;
+    border-top: 2px solid var(--indigo-deep);
+    background: linear-gradient(180deg, rgba(243, 236, 224, 0.98), rgba(232, 223, 206, 0.96));
+    transition: border-color 0.22s ease;
   }
-  .album-link-card small {
-    display: block;
+  .album-link-card:hover .album-link-card-body {
+    border-color: var(--vermillion);
+  }
+  .album-link-card-label {
     font-family: 'Klee One', serif;
+    font-size: 9px;
+    letter-spacing: 0.24em;
     color: var(--vermillion);
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    margin-top: 2px;
+    margin-bottom: 5px;
+    display: block;
+    text-transform: uppercase;
+  }
+  .album-link-card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--indigo-deep);
+    line-height: 1.38;
+    letter-spacing: 0.06em;
+    display: block;
   }
 
   .album-closing {
@@ -1110,12 +1224,6 @@
   }
 
   /* === Tips === */
-  .tips {
-    background: var(--paper-dark);
-    display: flex;
-    align-items: center;
-    padding: 56px clamp(24px, 5vw, 72px);
-  }
   .tips-inner {
     width: 100%;
     max-width: 1060px;
@@ -1273,12 +1381,12 @@
     .tl-item { grid-template-columns: 80px 1fr; }
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 760px) {
     .cover {
       padding: 14px;
     }
     .cover-sheet {
-      width: min(760px, calc(100vw - 28px));
+      width: min(680px, calc(100vw - 28px));
       min-height: calc(100svh - 28px);
       height: auto;
       grid-template-columns: 1fr;
@@ -1307,6 +1415,10 @@
       max-height: 34svh;
     }
     .cover-scroll {
+      display: none;
+    }
+    .cover-wave,
+    .cover-birds {
       display: none;
     }
   }
@@ -1446,6 +1558,9 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
+    .album-link-card-name {
+      font-size: 13px;
+    }
     .floating-nav {
       left: 10px;
       right: 10px;
@@ -1527,6 +1642,68 @@
     </div>
 
     <div class="cover-main">
+      <!-- 佐渡島シルエット（薄い透かし） -->
+      <div class="cover-island" aria-hidden="true">
+        <!--
+          SVG座標系: viewBox="0 0 130 380"
+          実座標→SVG変換:
+            lon: 138.13〜138.52 → x: 0〜130  (factor ≈ 333)
+            lat: 37.77〜38.33 → y: 0〜380  (factor ≈ 679, 北が上=y小)
+          主要点:
+            鷲崎(N) 38.33, 138.32 → (62,0)
+            両津湾入口 38.15, 138.45 → (105,122)
+            両津港  38.08, 138.44 → (103,170)
+            両津湾南 37.99, 138.47 → (113,230)
+            東岸南  37.88, 138.44 → (103,305)
+            峠(狭腰) 37.86, 138.35 → (73,319)
+            小木(南) 37.77, 138.28 → (50,380)
+            赤泊     37.82, 138.36 → (77,346)
+            西海岸南 37.90, 138.16 → (10,292)
+            真野(腰) 38.00, 138.16 → (10,224)
+            西海岸北 38.12, 138.18 → (17,142)
+            NW岬   38.24, 138.21 → (27,61)
+        -->
+        <svg viewBox="0 0 130 380" xmlns="http://www.w3.org/2000/svg">
+          <path d="
+            M 62,0
+            C 82,4 105,48 108,80
+            C 111,108 110,118 105,122
+            C 110,132 116,148 116,170
+            C 116,192 114,212 113,230
+            C 118,248 120,268 112,288
+            C 108,298 103,305 98,312
+            C 90,320 80,324 73,319
+            C 68,328 62,346 56,358
+            C 52,368 50,376 50,380
+            C 48,374 44,362 40,348
+            C 34,332 28,316 22,304
+            C 14,290 10,292 8,278
+            C 6,264 8,248 10,232
+            C 10,224 10,210 12,196
+            C 14,180 18,162 17,142
+            C 16,122 18,100 24,80
+            C 28,62 27,61 36,42
+            C 44,24 54,4 62,0
+            Z
+          "/>
+        </svg>
+      </div>
+      <!-- 波装飾 -->
+      <div class="cover-wave" aria-hidden="true">
+        <svg viewBox="0 0 600 76" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,46 C60,28 120,60 180,46 C240,32 300,58 360,46 C420,34 480,56 540,46 C570,41 586,44 600,46 L600,76 L0,76 Z" fill="rgba(28,58,94,0.055)"/>
+          <path d="M0,56 C50,44 100,66 150,56 C200,46 250,64 300,56 C350,48 400,62 450,56 C500,50 550,60 600,56 L600,76 L0,76 Z" fill="rgba(28,58,94,0.085)"/>
+          <path d="M0,64 C40,58 80,70 120,64 C160,58 200,68 240,64 C280,60 320,66 360,64 C400,62 440,66 480,64 C520,62 560,66 600,64 L600,76 L0,76 Z" fill="rgba(127,154,163,0.12)"/>
+        </svg>
+      </div>
+      <!-- 鳥のシルエット装飾 -->
+      <div class="cover-birds" aria-hidden="true">
+        <svg viewBox="0 0 64 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,12 Q4,6 8,12 Q12,18 16,12" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M22,8 Q27,2 32,8 Q37,14 42,8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          <path d="M46,14 Q49,10 52,14 Q55,18 58,14" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="cover-title-area">
         <span class="cover-eyebrow">―― 実際にたどった 三人旅 ――</span>
         <h1 class="cover-title">佐渡逍遙</h1>
@@ -1678,68 +1855,49 @@
   </div>
 </div>
 
-<!-- ======================== TIPS ======================== -->
-<div class="tips story-slide" id="notes">
-  <div class="tips-inner">
-    <div class="section-num">―― 〇三 ／ NOTES</div>
-    <div class="section-subtitle">予定から実録へ直したポイント</div>
-
-    <div class="tip-list">
-      <div class="tip-item" data-num="01">
-        <h4>今回の実走ルート</h4>
-        <p>両津港から學校藏へ行き、小木港でたらい舟。その後、宿近くで夕陽を見て、いさりびの宿を経由し、最後は両津港へ戻った。</p>
-      </div>
-      <div class="tip-item" data-num="02">
-        <h4>写真フォルダの対応</h4>
-        <p>haiko＝學校藏、ogiko＝小木港、yuyake＝夕陽、yado＝宿、hoshi＝宿周辺の夜、hune＝船、drive＝島内移動。</p>
-      </div>
-      <div class="tip-item" data-num="03">
-        <h4>南から西へ、最後に北東へ</h4>
-        <p>學校藏から小木港へ南下し、夕陽を見るため相川方面へ北上、最後に両津港へ戻る流れ。地図もこの順番に更新した。</p>
-      </div>
-      <div class="tip-item" data-num="04">
-        <h4>夕陽は宿近くの記憶として扱う</h4>
-        <p>yuyake は単独の観光地名ではなく、宿へ向かう途中のハイライト。yado / hoshi と並べると時間の流れがきれい。</p>
-      </div>
-      <div class="tip-item" data-num="05">
-        <h4>未訪問スポットは整理から外す</h4>
-        <p>大野亀、尖閣湾、佐渡金山、北沢浮遊選鉱場跡、宿根木は旧予定の候補だったため、今回の実録ルートからは外した。</p>
-      </div>
-      <div class="tip-item" data-num="06">
-        <h4>このしおりの読み順</h4>
-        <p>MAP で全体を見て、ROUTE LOG で道筋を追い、NOTES で整理し、ALBUMS で写真を見返す構成にした。</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ======================== ALBUMS ======================== -->
 <section id="albums" class="album-section story-slide">
-  <div class="section-num">―― 〇四 ／ ALBUMS</div>
+  <div class="section-num">―― 〇三 ／ ALBUMS</div>
   <h2 class="section-title">写真で辿る。</h2>
   <div class="section-subtitle">スポット別の別ページへ</div>
-  <p class="album-lead">地図の写真カードからも、ここからも各アルバムへ移動できる。メインページは旅の流れを読む場所、アルバムページは写真に浸る場所として分けた。</p>
+  <p class="album-lead">地図の写真カードから、あるいはここから各アルバムへ。旅の記憶を一枚ずつ、ひらいていく。</p>
 
   <div class="album-link-grid">
     <a class="album-link-card" href="albums/ryotsu.html">
-      <img src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="船と両津港のアルバム">
-      <span><b>両津港と移動</b><small>hune / drive</small></span>
+      <img class="album-link-card-img" src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="船と両津港のアルバム">
+      <div class="album-link-card-body">
+        <span class="album-link-card-label">hune / drive</span>
+        <span class="album-link-card-name">両津港と移動</span>
+      </div>
     </a>
     <a class="album-link-card" href="albums/gakkogura.html">
-      <img src="photo/haiko/P1188132.jpg" alt="學校藏のアルバム">
-      <span><b>學校藏</b><small>haiko</small></span>
+      <img class="album-link-card-img" src="photo/haiko/P1188132.jpg" alt="學校藏のアルバム">
+      <div class="album-link-card-body">
+        <span class="album-link-card-label">haiko</span>
+        <span class="album-link-card-name">學校藏</span>
+      </div>
     </a>
     <a class="album-link-card" href="albums/ogiko.html">
-      <img src="photo/ogiko/P1188214.jpg" alt="小木港とたらい舟のアルバム">
-      <span><b>小木港・たらい舟</b><small>ogiko</small></span>
+      <img class="album-link-card-img" src="photo/ogiko/P1188214.jpg" alt="小木港とたらい舟のアルバム">
+      <div class="album-link-card-body">
+        <span class="album-link-card-label">ogiko</span>
+        <span class="album-link-card-name">小木港・たらい舟</span>
+      </div>
     </a>
     <a class="album-link-card" href="albums/yuyake.html">
-      <img src="photo/yuyake/P1188239.jpg" alt="夕陽のアルバム">
-      <span><b>宿近くの夕陽</b><small>yuyake</small></span>
+      <img class="album-link-card-img" src="photo/yuyake/P1188239.jpg" alt="夕陽のアルバム">
+      <div class="album-link-card-body">
+        <span class="album-link-card-label">yuyake</span>
+        <span class="album-link-card-name">宿近くの夕陽</span>
+      </div>
     </a>
     <a class="album-link-card" href="albums/yado.html">
-      <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="宿と星のアルバム">
-      <span><b>宿と星</b><small>yado / hoshi</small></span>
+      <img class="album-link-card-img" src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="宿と星のアルバム">
+      <div class="album-link-card-body">
+        <span class="album-link-card-label">yado / hoshi</span>
+        <span class="album-link-card-name">宿と星</span>
+      </div>
     </a>
   </div>
   <p class="album-closing">SADO ITINERARY 2026 ／ 良き旅を。</p>
@@ -1749,15 +1907,13 @@
 <nav class="floating-nav">
   <a href="#map">Map</a>
   <a href="#route">Route</a>
-  <a href="#notes">Notes</a>
   <a href="#albums">Albums</a>
 </nav>
 
 <div class="slide-progress" aria-label="現在のスライド">
-  <span class="slide-count" id="slide-count">2 / 5</span>
+  <span class="slide-count" id="slide-count">2 / 4</span>
   <button class="slide-dot is-active" type="button" data-slide-target="#map" aria-label="MAPへ移動"></button>
   <button class="slide-dot" type="button" data-slide-target="#route" aria-label="ROUTE LOGへ移動"></button>
-  <button class="slide-dot" type="button" data-slide-target="#notes" aria-label="NOTESへ移動"></button>
   <button class="slide-dot" type="button" data-slide-target="#albums" aria-label="ALBUMSへ移動"></button>
 </div>
 </main>
@@ -1899,7 +2055,7 @@
 
   // ===== Cover Transition =====
   window.addEventListener('load', () => {
-    const coverDelay = window.location.hash ? 520 : 2400;
+    const coverDelay = window.location.hash ? 520 : 5000;
     window.setTimeout(() => {
       document.body.classList.remove('is-loading');
       document.body.classList.add('cover-done');
@@ -2095,12 +2251,21 @@
   // === Add markers & polylines ===
   actualSpots.forEach(s => createMarker(s).addTo(map));
 
-  // 実際にたどった順番を点線で結ぶ
+  // 毛筆感のある二重線ルート（滲み層＋主線）
   L.polyline(actualSpots.map(s => s.coords), {
-    color: '#c14a3a',
-    weight: 3,
-    opacity: 0.72,
-    dashArray: '6, 8'
+    color: '#c4963a',
+    weight: 9,
+    opacity: 0.11,
+    lineCap: 'round',
+    lineJoin: 'round'
+  }).addTo(map);
+  L.polyline(actualSpots.map(s => s.coords), {
+    color: '#b88a3a',
+    weight: 2.5,
+    opacity: 0.82,
+    dashArray: '10, 7',
+    lineCap: 'round',
+    lineJoin: 'round'
   }).addTo(map);
 
   // === 主要拠点に永続ラベル ===
@@ -2123,12 +2288,12 @@
     .addTo(map);
   });
 
-  // Fit bounds to keep the whole island in view on the wide map.
+  // Fit bounds — tighter to make the island and route appear larger.
   const sadoBounds = [
-    [37.80, 138.13],
-    [38.33, 138.58]
+    [37.76, 138.18],
+    [38.22, 138.52]
   ];
-  const mapPadding = window.matchMedia('(max-width: 640px)').matches ? [22, 22] : [18, 26];
+  const mapPadding = window.matchMedia('(max-width: 640px)').matches ? [16, 16] : [10, 12];
   map.fitBounds(sadoBounds, { padding: mapPadding });
   window.setTimeout(() => map.invalidateSize(), 2600);
   map.on('zoom move resize', () => positionSpotPreview(activePreviewSpot));
