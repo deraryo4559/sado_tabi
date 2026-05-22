@@ -34,7 +34,8 @@
     color: var(--ink);
     line-height: 1.85;
     font-size: 16px;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden;
     background-image:
       radial-gradient(rgba(184, 138, 58, 0.05) 1px, transparent 1px),
       radial-gradient(rgba(28, 58, 94, 0.04) 1px, transparent 1px);
@@ -47,13 +48,28 @@
   }
 
   .main-shell {
+    height: 100svh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.9s ease, transform 0.9s ease;
+    outline: none;
   }
   body.cover-done .main-shell {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .story-slide {
+    min-height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
   }
 
   /* === Cover === */
@@ -252,37 +268,37 @@
   /* === Map Section === */
   .map-section {
     background: var(--paper);
-    min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 48px 24px 56px;
+    padding: 40px clamp(20px, 4vw, 64px) 44px;
     border-top: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
   }
   .map-section-inner {
-    max-width: 720px;
+    width: 100%;
+    max-width: 1480px;
     margin: 0 auto;
     position: relative;
   }
 
   .map-frame {
     position: relative;
-    margin-top: 24px;
+    margin-top: 18px;
   }
 
   #leaflet-map {
-    height: 480px;
+    height: clamp(430px, 62vh, 700px);
     width: 100%;
     border: 1px solid var(--rule-strong);
     background: #f5f0e8;
-    box-shadow: 0 4px 16px rgba(31, 26, 23, 0.08);
+    box-shadow: 0 18px 42px rgba(31, 26, 23, 0.14);
   }
 
   .map-photo-preview {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    width: min(240px, calc(100% - 32px));
+    top: 50%;
+    right: clamp(18px, 3vw, 42px);
+    width: min(300px, calc(100% - 36px));
     z-index: 600;
     display: block;
     color: var(--ink);
@@ -292,13 +308,22 @@
     box-shadow: 0 16px 36px rgba(31, 26, 23, 0.22);
     opacity: 0;
     pointer-events: none;
-    transform: translateY(10px);
+    transform: translateY(calc(-50% + 10px));
     transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+  .map-photo-preview::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 28px;
+    height: 1px;
+    background: rgba(31, 26, 23, 0.26);
   }
   .map-photo-preview.is-visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: translateY(-50%);
   }
   .map-photo-preview img {
     display: block;
@@ -348,7 +373,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 12px;
     padding: 12px 16px;
     background: rgba(255, 255, 255, 0.5);
     border: 1px solid var(--rule);
@@ -375,7 +400,7 @@
   }
 
   .map-tip {
-    margin-top: 12px;
+    margin-top: 10px;
     font-family: 'Klee One', serif;
     font-size: 12px;
     color: var(--ink);
@@ -483,13 +508,16 @@
   .overview {
     background: var(--indigo-deep);
     color: var(--paper);
-    padding: 56px 24px;
+    display: flex;
+    align-items: center;
+    padding: 56px clamp(24px, 5vw, 72px);
     margin: 0;
     max-width: none;
   }
 
   .overview-inner {
-    max-width: 720px;
+    width: 100%;
+    max-width: 1060px;
     margin: 0 auto;
   }
 
@@ -507,9 +535,9 @@
   }
 
   .route-flow {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 34px;
     margin-top: 32px;
   }
 
@@ -517,7 +545,7 @@
     display: grid;
     grid-template-columns: 80px 1fr;
     gap: 16px;
-    padding: 16px 0;
+    padding: 14px 0;
     align-items: center;
     position: relative;
     border-bottom: 1px dashed rgba(212, 175, 106, 0.3);
@@ -694,11 +722,21 @@
 
   /* === Albums === */
   .album-section {
-    max-width: 920px;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+  .album-section > * {
+    width: 100%;
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .album-lead {
     max-width: 640px;
-    margin: -12px 0 34px 20px;
+    margin: -12px auto 34px;
     font-size: 14px;
     line-height: 1.9;
     color: rgba(31, 26, 23, 0.78);
@@ -746,6 +784,15 @@
     font-size: 10px;
     letter-spacing: 0.14em;
     margin-top: 2px;
+  }
+
+  .album-closing {
+    margin-top: 28px;
+    text-align: center;
+    font-family: 'Klee One', serif;
+    color: rgba(31, 26, 23, 0.54);
+    font-size: 11px;
+    letter-spacing: 0.18em;
   }
   .spot-album {
     border-top: 1px solid var(--rule-strong);
@@ -894,13 +941,19 @@
   /* === Tips === */
   .tips {
     background: var(--paper-dark);
-    padding: 56px 24px;
+    display: flex;
+    align-items: center;
+    padding: 56px clamp(24px, 5vw, 72px);
   }
-  .tips-inner { max-width: 720px; margin: 0 auto; }
+  .tips-inner {
+    width: 100%;
+    max-width: 1060px;
+    margin: 0 auto;
+  }
 
   .tip-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 32px;
   }
@@ -994,6 +1047,50 @@
   .floating-nav a:hover {
     background: var(--vermillion);
   }
+  .floating-nav a.is-active {
+    background: var(--vermillion);
+  }
+
+  .slide-progress {
+    position: fixed;
+    right: 18px;
+    top: 50%;
+    z-index: 90;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  body.cover-done .slide-progress {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .slide-count {
+    font-family: 'Klee One', serif;
+    color: var(--indigo-deep);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    writing-mode: vertical-rl;
+  }
+  .slide-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--indigo-deep);
+    background: rgba(243, 236, 224, 0.82);
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .slide-dot.is-active {
+    background: var(--vermillion);
+    border-color: var(--vermillion);
+    transform: scale(1.35);
+  }
 
   @media (min-width: 720px) {
     section { padding: 80px 32px; }
@@ -1003,14 +1100,99 @@
     .tl-item { grid-template-columns: 80px 1fr; }
   }
 
+  @media (max-width: 900px) {
+    .route-flow,
+    .tip-list {
+      grid-template-columns: 1fr;
+    }
+    .route-step {
+      padding: 12px 0;
+    }
+  }
+
   @media (max-width: 640px) {
-    #leaflet-map { height: 420px; }
+    body { font-size: 15px; }
+    .map-section {
+      padding: 28px 14px 78px;
+    }
+    .map-section .section-title {
+      font-size: clamp(25px, 8vw, 34px);
+    }
+    #leaflet-map {
+      height: min(58svh, 430px);
+      min-height: 360px;
+    }
     .map-photo-preview {
       top: auto;
       right: 12px;
       left: 12px;
       bottom: 12px;
       width: auto;
+      transform: translateY(10px);
+    }
+    .map-photo-preview.is-visible {
+      transform: translateY(0);
+    }
+    .map-legend {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+    .overview,
+    .tips,
+    .album-section {
+      padding: 46px 18px 86px;
+    }
+    .route-flow,
+    .tip-list {
+      margin-top: 24px;
+    }
+    .route-step {
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      padding: 11px 0;
+    }
+    .route-time {
+      font-size: 12px;
+    }
+    .route-detail {
+      padding-left: 12px;
+    }
+    .route-detail h4 {
+      font-size: 15px;
+    }
+    .route-detail p,
+    .tip-item p {
+      font-size: 12px;
+    }
+    .tip-item {
+      padding: 14px 14px 14px 50px;
+    }
+    .album-link-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .floating-nav {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px;
+      gap: 2px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+    .floating-nav a {
+      padding: 4px 6px;
+    }
+    .slide-progress {
+      right: 7px;
+      gap: 8px;
+    }
+    .slide-count {
+      font-size: 10px;
     }
     .album-head {
       grid-template-columns: 1fr;
@@ -1042,6 +1224,21 @@
   @media (max-width: 380px) {
     .cover-stamp { width: 52px; height: 52px; top: 28px; right: 28px; }
     .cover-info { grid-template-columns: 1fr; }
+    .album-link-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html,
+    .main-shell {
+      scroll-behavior: auto;
+    }
+    .cover,
+    .main-shell,
+    .map-photo-preview,
+    .album-link-card,
+    .photo-card img {
+      transition: none;
+    }
   }
 </style>
 </head>
@@ -1087,13 +1284,13 @@
   </div>
 </section>
 
-<main id="main-content" class="main-shell" aria-hidden="true">
+<main id="main-content" class="main-shell" aria-hidden="true" tabindex="-1">
 
 <!-- ======================== MAP ======================== -->
-<div class="map-section" id="map">
+<div class="map-section story-slide" id="map">
   <div class="map-section-inner">
     <div class="section-num">―― 〇一 ／ MAP</div>
-    <h2 class="section-title">佐渡島内、<br>旅のルート。</h2>
+    <h2 class="section-title">佐渡島内、旅のルート。</h2>
     <div class="section-subtitle">実際に行った順番で、両津港から両津港へ</div>
 
     <div class="map-frame">
@@ -1129,7 +1326,7 @@
 </div>
 
 <!-- ======================== ROUTE SUMMARY ======================== -->
-<div class="overview" id="route">
+<div class="overview story-slide" id="route">
   <div class="overview-inner">
     <div class="section-num">―― 〇二 ／ ROUTE LOG</div>
     <h2 class="section-title" style="color: var(--paper);">結局たどった、佐渡の道。</h2>
@@ -1200,152 +1397,10 @@
   </div>
 </div>
 
-<!-- ======================== ROUTE LOG ======================== -->
-<section id="route-detail">
-  <div class="section-num">―― 〇三 ／ ROUTE DETAIL</div>
-  <h2 class="section-title">実際の一日。<br>學校藏から夕陽まで。</h2>
-  <div class="section-subtitle">両津港 → 學校藏 → 小木港 → 春日崎 → 道遊 → 両津港</div>
-
-  <div class="day-card">
-    <div class="day-header">
-      <div class="day-label">旅の実録<small>ACTUAL</small></div>
-      <div class="day-date">ROUTE</div>
-    </div>
-
-    <div class="timeline">
-
-      <div class="tl-item">
-        <div class="tl-time">START</div>
-        <div class="tl-content">
-          <h4>両津港から島内へ</h4>
-          <p>船で佐渡へ渡り、両津港から今回の実走ルートを開始。移動中の記録は <span class="folder-name">hune</span> と <span class="folder-name">drive</span> に対応。</p>
-          <a class="map-link" href="https://maps.google.com/?cid=1633343474753084239" target="_blank" rel="noopener">▷ 地図</a>
-          <div class="photo-strip">
-            <figure>
-              <img src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="佐渡へ向かう船の写真" loading="lazy">
-              <figcaption>hune ／ 船</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/drive/LINE_ALBUM_ありがとう~💖🧤_260520_81.jpg" alt="佐渡島内を車で移動する途中の写真" loading="lazy">
-              <figcaption>drive ／ 島内移動</figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item highlight">
-        <div class="tl-time">01</div>
-        <div class="tl-content">
-          <h4>學校藏（尾畑酒造）</h4>
-          <p>最初の目的地は旧西三川小学校を再生した酒蔵。<span class="folder-name">haiko</span> は「廃校」と読めるため、ここに対応させる。</p>
-          <a class="map-link" href="https://maps.google.com/?cid=287697162859113954" target="_blank" rel="noopener">▷ 地図</a>
-          <div class="photo-strip">
-            <figure>
-              <img src="photo/haiko/P1188132.jpg" alt="學校藏の校舎の写真" loading="lazy">
-              <figcaption>haiko ／ 廃校の校舎</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/haiko/P1188134.jpg" alt="學校藏の屋内の写真" loading="lazy">
-              <figcaption>haiko ／ 尾畑酒造</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/haiko/P1188135.jpg" alt="學校藏で撮影した写真" loading="lazy">
-              <figcaption>haiko ／ 旧小学校</figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-time">02</div>
-        <div class="tl-content">
-          <h4>たらい舟（小木港）</h4>
-          <p>次は小木港でたらい舟。<span class="folder-name">ogiko</span> は「小木港」と読めるので、たらい舟体験の写真として整理。</p>
-          <a class="map-link" href="https://maps.google.com/?cid=7712237206303431939" target="_blank" rel="noopener">▷ 地図</a>
-          <div class="photo-strip">
-            <figure>
-              <img src="photo/ogiko/P1188214.jpg" alt="小木港でのたらい舟の写真" loading="lazy">
-              <figcaption>ogiko ／ 小木港</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/ogiko/P1188138.jpg" alt="たらい舟体験の写真" loading="lazy">
-              <figcaption>ogiko ／ たらい舟</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/ogiko/P1188140.jpg" alt="小木港周辺で撮影した写真" loading="lazy">
-              <figcaption>ogiko ／ 港まわり</figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item highlight">
-        <div class="tl-time">03</div>
-        <div class="tl-content">
-          <h4>宿近くで夕陽を見る</h4>
-          <p>小木港から北上し、いさりびの宿の近くで夕陽へ。<span class="folder-name">yuyake</span> はそのまま夕焼け・夕陽の写真。</p>
-          <div class="photo-strip">
-            <figure>
-              <img src="photo/yuyake/P1188239.jpg" alt="宿近くで見た夕陽の写真" loading="lazy">
-              <figcaption>yuyake ／ 夕陽</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/yuyake/LINE_ALBUM_ありがとう~💖🧤_260520_92.jpg" alt="海に沈む夕陽の写真" loading="lazy">
-              <figcaption>yuyake ／ 海辺</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/yuyake/LINE_ALBUM_ありがとう~💖🧤_260520_95.jpg" alt="夕焼け空の写真" loading="lazy">
-              <figcaption>yuyake ／ 夕焼け</figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-time">04</div>
-        <div class="tl-content">
-          <h4>いさりびの宿 道遊</h4>
-          <p>夕陽のあと、宿へ。<span class="folder-name">yado</span> は宿、<span class="folder-name">hoshi</span> は宿周辺の夜空として読むのが自然。</p>
-          <div class="photo-strip">
-            <figure>
-              <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="いさりびの宿で撮影した写真" loading="lazy">
-              <figcaption>yado ／ 宿</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_135.jpg" alt="いさりびの宿の写真" loading="lazy">
-              <figcaption>yado ／ 道遊</figcaption>
-            </figure>
-            <figure>
-              <img src="photo/hoshi/LINE_ALBUM_ありがとう~💖🧤_260520_111.jpg" alt="宿周辺で見た星空の写真" loading="lazy">
-              <figcaption>hoshi ／ 星</figcaption>
-            </figure>
-          </div>
-        </div>
-      </div>
-
-      <div class="tl-item highlight">
-        <div class="tl-time">GOAL</div>
-        <div class="tl-content">
-          <h4>そのまま両津港へ移動</h4>
-          <p>宿のあとは両津港へ。今回のしおりは、予定ではなくこの実際の流れに合わせて整理。</p>
-          <a class="map-link" href="https://maps.google.com/?cid=1633343474753084239" target="_blank" rel="noopener">▷ 地図</a>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="lodging-box">
-      <h4>いさりびの宿 道遊</h4>
-      <p>佐渡市相川鹿伏333-1（春日崎）<br>夕陽と宿の記録は yuyake / yado / hoshi にまとまっている。<br>TEL 0259-74-3381</p>
-      <a href="http://douyuu.com/" target="_blank" rel="noopener">▷ 公式サイト</a>
-    </div>
-  </div>
-</section>
-
 <!-- ======================== TIPS ======================== -->
-<div class="tips">
+<div class="tips story-slide" id="notes">
   <div class="tips-inner">
-    <div class="section-num">―― 〇四 ／ NOTES</div>
+    <div class="section-num">―― 〇三 ／ NOTES</div>
     <h2 class="section-title">旅の整理。</h2>
     <div class="section-subtitle">予定から実録へ直したポイント</div>
 
@@ -1372,15 +1427,15 @@
       </div>
       <div class="tip-item" data-num="06">
         <h4>このしおりの読み順</h4>
-        <p>地図で全体を見て、実録ルートで写真を追い、最後に ALBUMS でスポットごとの写真を見返す構成にした。</p>
+        <p>MAP で全体を見て、ROUTE LOG で道筋を追い、NOTES で整理し、ALBUMS で写真を見返す構成にした。</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ======================== ALBUMS ======================== -->
-<section id="albums" class="album-section">
-  <div class="section-num">―― 〇五 ／ ALBUMS</div>
+<section id="albums" class="album-section story-slide">
+  <div class="section-num">―― 〇四 ／ ALBUMS</div>
   <h2 class="section-title">写真で辿る。</h2>
   <div class="section-subtitle">スポット別の別ページへ</div>
   <p class="album-lead">地図の写真カードからも、ここからも各アルバムへ移動できる。メインページは旅の流れを読む場所、アルバムページは写真に浸る場所として分けた。</p>
@@ -1407,32 +1462,154 @@
       <span><b>宿と星</b><small>yado / hoshi</small></span>
     </a>
   </div>
+  <p class="album-closing">SADO ITINERARY 2026 ／ 良き旅を。</p>
 </section>
-
-<!-- ======================== FOOTER ======================== -->
-<footer>
-  <div class="seal">佐渡<br>逍遙</div>
-  <div class="footer-text">
-    SADO ITINERARY 2026<br>
-    良き旅を。
-  </div>
-</footer>
 
 <!-- Floating Nav -->
 <nav class="floating-nav">
   <a href="#map">Map</a>
   <a href="#route">Route</a>
+  <a href="#notes">Notes</a>
   <a href="#albums">Albums</a>
 </nav>
+
+<div class="slide-progress" aria-label="現在のスライド">
+  <span class="slide-count" id="slide-count">2 / 5</span>
+  <button class="slide-dot is-active" type="button" data-slide-target="#map" aria-label="MAPへ移動"></button>
+  <button class="slide-dot" type="button" data-slide-target="#route" aria-label="ROUTE LOGへ移動"></button>
+  <button class="slide-dot" type="button" data-slide-target="#notes" aria-label="NOTESへ移動"></button>
+  <button class="slide-dot" type="button" data-slide-target="#albums" aria-label="ALBUMSへ移動"></button>
+</div>
 </main>
 
 <script>
+  // ===== Slide Reading Experience =====
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual';
+  }
+
+  const slideRoot = document.getElementById('main-content');
+  const slides = Array.from(document.querySelectorAll('.story-slide'));
+  const slideDots = Array.from(document.querySelectorAll('.slide-dot'));
+  const slideLinks = Array.from(document.querySelectorAll('.floating-nav a[href^="#"]'));
+  const slideCount = document.getElementById('slide-count');
+  let currentSlideIndex = 0;
+  let scrollTicking = false;
+
+  function updateSlideState(index) {
+    if (!slides.length) return;
+    currentSlideIndex = Math.max(0, Math.min(index, slides.length - 1));
+    const activeId = slides[currentSlideIndex].id;
+    if (slideCount) {
+      slideCount.textContent = `${currentSlideIndex + 2} / ${slides.length + 1}`;
+    }
+    slideDots.forEach((dot) => {
+      dot.classList.toggle('is-active', dot.dataset.slideTarget === `#${activeId}`);
+    });
+    slideLinks.forEach((link) => {
+      link.classList.toggle('is-active', link.getAttribute('href') === `#${activeId}`);
+    });
+  }
+
+  function scrollToSlide(index, behavior = 'smooth') {
+    if (!slideRoot || !slides.length) return;
+    const targetIndex = Math.max(0, Math.min(index, slides.length - 1));
+    slideRoot.scrollTo({
+      top: slides[targetIndex].offsetTop,
+      behavior
+    });
+    updateSlideState(targetIndex);
+  }
+
+  function getSlideIndexByHash() {
+    const id = window.location.hash.replace('#', '');
+    if (!id) return 0;
+    const target = document.getElementById(id);
+    const targetSlide = target?.closest('.story-slide');
+    const index = slides.indexOf(targetSlide || target);
+    return index >= 0 ? index : 0;
+  }
+
+  function syncActiveSlide() {
+    if (!slideRoot || !slides.length) return;
+    const top = slideRoot.scrollTop;
+    let nearestIndex = 0;
+    let nearestDistance = Infinity;
+    slides.forEach((slide, index) => {
+      const distance = Math.abs(slide.offsetTop - top);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestIndex = index;
+      }
+    });
+    updateSlideState(nearestIndex);
+  }
+
+  function handleSlideNavigation(event, targetId) {
+    if (!targetId) return;
+    const target = document.getElementById(targetId.replace('#', ''));
+    const targetSlide = target?.closest('.story-slide');
+    const index = slides.indexOf(targetSlide || target);
+    if (index < 0) return;
+    event.preventDefault();
+    window.history.replaceState(null, '', targetId);
+    scrollToSlide(index);
+  }
+
+  slideRoot?.addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    window.requestAnimationFrame(() => {
+      syncActiveSlide();
+      scrollTicking = false;
+    });
+  });
+
+  slideDots.forEach((dot) => {
+    dot.addEventListener('click', (event) => {
+      handleSlideNavigation(event, dot.dataset.slideTarget);
+    });
+  });
+
+  slideLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      handleSlideNavigation(event, link.getAttribute('href'));
+    });
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (!document.body.classList.contains('cover-done')) return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    const tagName = document.activeElement?.tagName;
+    if (tagName && /INPUT|TEXTAREA|SELECT/.test(tagName)) return;
+
+    const nextKeys = ['ArrowDown', 'PageDown', ' '];
+    const prevKeys = ['ArrowUp', 'PageUp'];
+    if (nextKeys.includes(event.key)) {
+      event.preventDefault();
+      scrollToSlide(currentSlideIndex + (event.shiftKey && event.key === ' ' ? -1 : 1));
+    } else if (prevKeys.includes(event.key)) {
+      event.preventDefault();
+      scrollToSlide(currentSlideIndex - 1);
+    } else if (event.key === 'Home') {
+      event.preventDefault();
+      scrollToSlide(0);
+    } else if (event.key === 'End') {
+      event.preventDefault();
+      scrollToSlide(slides.length - 1);
+    }
+  });
+
+  updateSlideState(0);
+
   // ===== Cover Transition =====
   window.addEventListener('load', () => {
     window.setTimeout(() => {
       document.body.classList.remove('is-loading');
       document.body.classList.add('cover-done');
-      document.getElementById('main-content')?.setAttribute('aria-hidden', 'false');
+      slideRoot?.setAttribute('aria-hidden', 'false');
+      scrollToSlide(getSlideIndexByHash(), 'auto');
+      slideRoot?.focus({ preventScroll: true });
     }, 2400);
   });
 
@@ -1610,9 +1787,12 @@
     .addTo(map);
   });
 
-  // Fit bounds to show all
-  const allCoords = actualSpots.map(s => s.coords);
-  map.fitBounds(allCoords, { padding: [50, 50] });
+  // Fit bounds to keep the whole island in view on the wide map.
+  const sadoBounds = [
+    [37.78, 138.10],
+    [38.36, 138.62]
+  ];
+  map.fitBounds(sadoBounds, { padding: [36, 36] });
   window.setTimeout(() => map.invalidateSize(), 2600);
 
   // Click to enable scroll wheel
