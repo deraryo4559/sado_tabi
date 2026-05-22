@@ -1497,6 +1497,35 @@
   }
 
   @media (max-width: 900px) {
+    .map-section {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+    #leaflet-map {
+      height: min(64svh, 600px);
+      min-height: 420px;
+    }
+    .map-photo-preview {
+      width: min(260px, calc(100% - 32px));
+    }
+    .map-photo-preview img {
+      aspect-ratio: 16 / 10;
+    }
+    .map-preview-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .map-spot-index {
+      top: 12px;
+      right: 12px;
+      width: min(198px, calc(100% - 24px));
+      padding: 10px;
+    }
+    .map-spot-button {
+      padding: 6px 7px;
+    }
     .route-flow,
     .tip-list {
       grid-template-columns: 1fr;
@@ -1569,27 +1598,79 @@
       max-height: 30svh;
     }
     .map-section {
-      padding: 28px 14px 78px;
+      padding: 24px 10px 76px;
     }
     .map-section .section-title {
       font-size: clamp(25px, 8vw, 34px);
     }
+    .map-frame {
+      margin-top: 12px;
+    }
     #leaflet-map {
-      height: min(58svh, 430px);
-      min-height: 360px;
+      height: min(64svh, 480px);
+      min-height: 400px;
     }
     .map-photo-preview {
       top: auto;
-      right: 12px;
-      left: 12px;
-      bottom: 12px;
+      right: 10px;
+      left: 10px;
+      bottom: 10px;
       width: auto;
+      min-height: 96px;
+      max-height: 132px;
+      display: grid;
+      grid-template-columns: 104px minmax(0, 1fr);
+      align-items: stretch;
+      overflow: hidden;
       --preview-left: auto;
       --preview-top: auto;
       transform: translateY(10px);
     }
+    .map-photo-preview::before {
+      display: none;
+    }
+    .map-photo-preview::after {
+      right: 10px;
+      width: 12px;
+      height: 22px;
+    }
     .map-photo-preview.is-visible {
       transform: translateY(0);
+    }
+    .map-photo-preview img {
+      width: 104px;
+      height: 100%;
+      min-height: 96px;
+      max-height: 132px;
+      aspect-ratio: auto;
+      border-right: 1px solid var(--rule);
+      border-bottom: 0;
+    }
+    .map-preview-copy {
+      min-width: 0;
+      padding: 8px 26px 8px 10px;
+    }
+    .map-preview-meta {
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      margin-bottom: 1px;
+    }
+    .map-preview-title {
+      font-size: 13px;
+      line-height: 1.35;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .map-preview-text {
+      font-size: 10.5px;
+      line-height: 1.45;
+      margin: 2px 0 3px;
+    }
+    .map-preview-action {
+      font-size: 8.5px;
+      letter-spacing: 0.08em;
     }
     .map-spot-index {
       left: 10px;
@@ -1627,10 +1708,12 @@
       font-size: 11px;
     }
     .map-legend {
-      grid-template-columns: 1fr;
-      gap: 8px;
-      padding: 10px 12px;
-      font-size: 12px;
+      display: none;
+    }
+    .map-tip {
+      margin: 8px 2px 0;
+      font-size: 11px;
+      text-align: left;
     }
     .overview,
     .tips,
@@ -1720,6 +1803,21 @@
   @media (max-width: 380px) {
     .cover-info { grid-template-columns: 1fr; }
     .album-link-grid { grid-template-columns: 1fr; }
+    .map-photo-preview {
+      grid-template-columns: 88px minmax(0, 1fr);
+    }
+    .map-photo-preview img {
+      width: 88px;
+    }
+    .map-preview-title {
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .map-preview-text {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1977,7 +2075,7 @@
 
   <div class="album-link-grid">
     <a class="album-link-card" href="albums/ryotsu.html">
-      <img class="album-link-card-img" src="photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg" alt="船と両津港のアルバム">
+      <img class="album-link-card-img" src="photo/hune/ryotsu-hune-27.jpg" alt="船と両津港のアルバム">
       <div class="album-link-card-body">
         <span class="album-link-card-label">hune / drive</span>
         <span class="album-link-card-name">両津港と移動</span>
@@ -2005,7 +2103,7 @@
       </div>
     </a>
     <a class="album-link-card" href="albums/yado.html">
-      <img class="album-link-card-img" src="photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg" alt="宿と星のアルバム">
+      <img class="album-link-card-img" src="photo/yado/yado-107.jpg" alt="宿と星のアルバム">
       <div class="album-link-card-body">
         <span class="album-link-card-label">yado / hoshi</span>
         <span class="album-link-card-name">宿と星</span>
@@ -2206,7 +2304,7 @@
       detail: '船と島内移動の写真: hune / drive',
       color: '#c14a3a',
       album: 'albums/ryotsu.html',
-      image: 'photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg',
+      image: 'photo/hune/ryotsu-hune-27.jpg',
       preview: 'hune / drive',
       desc: '船で島へ渡り、両津港から旅が始まる。',
       focusZoom: 14
@@ -2254,7 +2352,7 @@
       detail: '宿と夜空の写真: yado / hoshi',
       color: '#b88a3a',
       album: 'albums/yado.html',
-      image: 'photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg',
+      image: 'photo/yado/yado-107.jpg',
       preview: 'yado / hoshi',
       desc: '夕陽のあとに寄った宿と、夜の余韻。',
       focusZoom: 15.25
@@ -2266,7 +2364,7 @@
       detail: '宿からそのまま両津港へ移動',
       color: '#c14a3a',
       album: 'albums/ryotsu.html',
-      image: 'photo/drive/LINE_ALBUM_ありがとう~💖🧤_260520_81.jpg',
+      image: 'photo/drive/ryotsu-drive-81.jpg',
       preview: 'drive',
       desc: '島内を横断して、また両津港へ戻る。',
       focusZoom: 14
@@ -2521,6 +2619,8 @@
   const spotIndex = document.getElementById('map-spot-index');
   const spotList = document.getElementById('map-spot-list');
   const spotMarkers = new window.Map();
+  const compactMapQuery = window.matchMedia('(max-width: 640px)');
+  const tabletMapQuery = window.matchMedia('(max-width: 900px)');
   let activePreviewSpot = null;
   let activeSpotNum = null;
 
@@ -2530,7 +2630,7 @@
 
   function positionSpotPreview(spot) {
     if (!previewCard || !mapFrame || !spot) return;
-    if (window.matchMedia('(max-width: 640px)').matches) {
+    if (compactMapQuery.matches) {
       previewCard.style.removeProperty('--preview-left');
       previewCard.style.removeProperty('--preview-top');
       return;
@@ -2556,6 +2656,13 @@
     top = clampNumber(top, margin, mapSize.y - cardHeight - margin);
     previewCard.style.setProperty('--preview-left', `${left}px`);
     previewCard.style.setProperty('--preview-top', `${top}px`);
+  }
+
+  function hideSpotPreview() {
+    activePreviewSpot = null;
+    previewCard.classList.remove('is-visible');
+    previewCard.setAttribute('aria-hidden', 'true');
+    previewCard.setAttribute('tabindex', '-1');
   }
 
   function setActiveSpot(spot) {
@@ -2588,7 +2695,13 @@
   }
 
   function focusSpot(spot) {
-    map.flyTo(spot.coords, spot.focusZoom || 14, {
+    const targetZoom = compactMapQuery.matches
+      ? Math.min(spot.focusZoom || 14, 14)
+      : tabletMapQuery.matches
+        ? Math.min(spot.focusZoom || 14, 14.5)
+        : spot.focusZoom || 14;
+
+    map.flyTo(spot.coords, targetZoom, {
       animate: true,
       duration: 0.85,
       easeLinearity: 0.25
@@ -2649,7 +2762,10 @@
       popupAnchor: [0, -16]
     });
 
-    const marker = L.marker(spot.coords, { icon })
+    const marker = L.marker(spot.coords, {
+      icon,
+      bubblingMouseEvents: false
+    })
       .bindTooltip(`${spot.num}. ${spot.name}`, {
         direction: 'top',
         offset: [0, -14],
@@ -2712,21 +2828,19 @@
     [37.76, 138.18],
     [38.22, 138.52]
   ];
-  const mapPadding = window.matchMedia('(max-width: 640px)').matches ? [16, 16] : [10, 12];
+  const mapPadding = compactMapQuery.matches ? [16, 16] : [10, 12];
   map.fitBounds(sadoBounds, { padding: mapPadding });
   window.setTimeout(() => map.invalidateSize(), 2600);
   map.on('zoom move resize', () => positionSpotPreview(activePreviewSpot));
 
   // Click to enable scroll wheel
-  map.on('click', () => map.scrollWheelZoom.enable());
+  map.on('click', () => {
+    map.scrollWheelZoom.enable();
+    if (compactMapQuery.matches) hideSpotPreview();
+  });
   map.on('mouseout', () => map.scrollWheelZoom.disable());
 
-  document.querySelector('.map-frame').addEventListener('mouseleave', () => {
-    activePreviewSpot = null;
-    previewCard.classList.remove('is-visible');
-    previewCard.setAttribute('aria-hidden', 'true');
-    previewCard.setAttribute('tabindex', '-1');
-  });
+  mapFrame?.addEventListener('mouseleave', hideSpotPreview);
   } // end of else block (Leaflet loaded)
 </script>
 
