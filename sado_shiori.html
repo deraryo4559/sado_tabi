@@ -670,6 +670,79 @@
     flex-shrink: 0;
   }
 
+  .map-spot-index {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 610;
+    width: min(228px, calc(100% - 32px));
+    padding: 12px;
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.5), rgba(243, 236, 224, 0.92)),
+      var(--paper);
+    border: 1px solid rgba(31, 26, 23, 0.24);
+    box-shadow: 0 12px 30px rgba(31, 26, 23, 0.14);
+  }
+  .map-spot-index-title {
+    display: block;
+    margin-bottom: 8px;
+    font-family: 'Klee One', serif;
+    color: var(--indigo-deep);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+  .map-spot-list {
+    display: grid;
+    gap: 6px;
+  }
+  .map-spot-button {
+    appearance: none;
+    width: 100%;
+    border: 1px solid rgba(31, 26, 23, 0.16);
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    padding: 7px 8px;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+  .map-spot-button:hover,
+  .map-spot-button.is-active {
+    background: rgba(193, 74, 58, 0.1);
+    border-color: rgba(193, 74, 58, 0.44);
+    transform: translateX(-2px);
+  }
+  .map-spot-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper);
+    font-family: 'Klee One', serif;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .map-spot-name {
+    min-width: 0;
+    color: var(--indigo-deep);
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .custom-pin.is-active .map-pin {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 6px rgba(193, 74, 58, 0.2), 0 5px 14px rgba(0,0,0,0.32) !important;
+  }
+
   .map-tip {
     margin-top: 10px;
     font-family: 'Klee One', serif;
@@ -1518,6 +1591,41 @@
     .map-photo-preview.is-visible {
       transform: translateY(0);
     }
+    .map-spot-index {
+      left: 10px;
+      right: 10px;
+      top: 10px;
+      width: auto;
+      padding: 8px;
+    }
+    .map-spot-index-title {
+      margin-bottom: 6px;
+      font-size: 9px;
+    }
+    .map-spot-list {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .map-spot-list::-webkit-scrollbar {
+      display: none;
+    }
+    .map-spot-button {
+      width: auto;
+      min-width: 118px;
+      grid-template-columns: 22px minmax(0, 1fr);
+      padding: 6px 7px;
+    }
+    .map-spot-number {
+      width: 22px;
+      height: 22px;
+      font-size: 10px;
+    }
+    .map-spot-name {
+      font-size: 11px;
+    }
     .map-legend {
       grid-template-columns: 1fr;
       gap: 8px;
@@ -1762,6 +1870,10 @@
           <span class="map-preview-action">クリックでアルバムへ</span>
         </span>
       </a>
+      <div id="map-spot-index" class="map-spot-index" aria-label="スポット一覧">
+        <span class="map-spot-index-title">SPOTS / 拠点一覧</span>
+        <div class="map-spot-list" id="map-spot-list"></div>
+      </div>
     </div>
 
     <div class="map-legend">
@@ -2096,7 +2208,8 @@
       album: 'albums/ryotsu.html',
       image: 'photo/hune/LINE_ALBUM_ありがとう~💖🧤_260520_27.jpg',
       preview: 'hune / drive',
-      desc: '船で島へ渡り、両津港から旅が始まる。'
+      desc: '船で島へ渡り、両津港から旅が始まる。',
+      focusZoom: 14
     },
     {
       num: 2,
@@ -2107,7 +2220,8 @@
       album: 'albums/gakkogura.html',
       image: 'photo/haiko/P1188132.jpg',
       preview: 'haiko',
-      desc: '旧小学校の気配が残る、今回の主役スポット。'
+      desc: '旧小学校の気配が残る、今回の主役スポット。',
+      focusZoom: 14.5
     },
     {
       num: 3,
@@ -2118,7 +2232,8 @@
       album: 'albums/ogiko.html',
       image: 'photo/ogiko/P1188214.jpg',
       preview: 'ogiko',
-      desc: '水際でたらい舟に乗った、小木港の記録。'
+      desc: '水際でたらい舟に乗った、小木港の記録。',
+      focusZoom: 14.5
     },
     {
       num: 4,
@@ -2129,7 +2244,8 @@
       album: 'albums/yuyake.html',
       image: 'photo/yuyake/P1188239.jpg',
       preview: 'yuyake',
-      desc: '宿近くで見た、海と空がほどける時間。'
+      desc: '宿近くで見た、海と空がほどける時間。',
+      focusZoom: 15.25
     },
     {
       num: 5,
@@ -2140,7 +2256,8 @@
       album: 'albums/yado.html',
       image: 'photo/yado/LINE_ALBUM_ありがとう~💖🧤_260520_107.jpg',
       preview: 'yado / hoshi',
-      desc: '夕陽のあとに寄った宿と、夜の余韻。'
+      desc: '夕陽のあとに寄った宿と、夜の余韻。',
+      focusZoom: 15.25
     },
     {
       num: 6,
@@ -2151,8 +2268,248 @@
       album: 'albums/ryotsu.html',
       image: 'photo/drive/LINE_ALBUM_ありがとう~💖🧤_260520_81.jpg',
       preview: 'drive',
-      desc: '島内を横断して、また両津港へ戻る。'
+      desc: '島内を横断して、また両津港へ戻る。',
+      focusZoom: 14
     }
+  ];
+
+  const actualRouteCoords = [
+    [38.081908, 138.438468],
+    [38.08146, 138.438771],
+    [38.080697, 138.438057],
+    [38.076269, 138.444552],
+    [38.074733, 138.443178],
+    [38.06944, 138.443558],
+    [38.067864, 138.445288],
+    [38.065112, 138.445552],
+    [38.061787, 138.449611],
+    [38.060216, 138.450483],
+    [38.058765, 138.449302],
+    [38.058006, 138.447655],
+    [38.05706, 138.448465],
+    [38.054505, 138.448766],
+    [38.051648, 138.447675],
+    [38.049468, 138.444992],
+    [38.043967, 138.444571],
+    [38.039689, 138.43953],
+    [38.037832, 138.438518],
+    [38.034671, 138.439202],
+    [38.028432, 138.436656],
+    [38.026559, 138.433465],
+    [38.024107, 138.431876],
+    [38.02256, 138.429819],
+    [38.015996, 138.429619],
+    [38.014555, 138.423487],
+    [38.014534, 138.416238],
+    [38.010771, 138.416182],
+    [38.009022, 138.414726],
+    [38.004825, 138.413838],
+    [38.001145, 138.408567],
+    [37.988693, 138.395898],
+    [37.987408, 138.393471],
+    [37.987282, 138.389536],
+    [37.985549, 138.385071],
+    [37.981224, 138.375818],
+    [37.979576, 138.374017],
+    [37.968942, 138.348457],
+    [37.967579, 138.346857],
+    [37.958601, 138.340622],
+    [37.956851, 138.338245],
+    [37.955119, 138.333271],
+    [37.951883, 138.33262],
+    [37.95025, 138.331193],
+    [37.946541, 138.323974],
+    [37.941017, 138.30834],
+    [37.940334, 138.307892],
+    [37.938655, 138.308255],
+    [37.936663, 138.307042],
+    [37.930357, 138.301443],
+    [37.927305, 138.301427],
+    [37.920835, 138.296274],
+    [37.916906, 138.29182],
+    [37.910025, 138.287908],
+    [37.907351, 138.283804],
+    [37.904806, 138.283473],
+    [37.900504, 138.287158],
+    [37.899522, 138.290782],
+    [37.899409, 138.289549],
+    [37.898865, 138.290097],
+    [37.899235, 138.288669],
+    [37.897587, 138.291152],
+    [37.895572, 138.289289],
+    [37.892603, 138.290645],
+    [37.89016, 138.290437],
+    [37.888643, 138.289416],
+    [37.886201, 138.293935],
+    [37.885339, 138.291585],
+    [37.881442, 138.291407],
+    [37.878194, 138.295134],
+    [37.87398, 138.303002],
+    [37.872396, 138.303102],
+    [37.870731, 138.301736],
+    [37.86647, 138.300501],
+    [37.865591, 138.301212],
+    [37.865158, 138.304194],
+    [37.864345, 138.304854],
+    [37.861132, 138.304596],
+    [37.858452, 138.302517],
+    [37.851566, 138.292988],
+    [37.849222, 138.292861],
+    [37.847275, 138.291968],
+    [37.844886, 138.292145],
+    [37.841863, 138.287688],
+    [37.83973, 138.286685],
+    [37.835099, 138.282293],
+    [37.832753, 138.278006],
+    [37.830404, 138.278167],
+    [37.830354, 138.280239],
+    [37.827069, 138.285265],
+    [37.823912, 138.285995],
+    [37.822322, 138.288166],
+    [37.820214, 138.284589],
+    [37.81849, 138.283535],
+    [37.815882, 138.278574],
+    [37.814994, 138.278456],
+    [37.81487, 138.279451],
+    [37.81449, 138.278777],
+    [37.815882, 138.278574],
+    [37.81849, 138.283535],
+    [37.820214, 138.284589],
+    [37.822322, 138.288166],
+    [37.823912, 138.285995],
+    [37.827069, 138.285265],
+    [37.830354, 138.280239],
+    [37.830404, 138.278167],
+    [37.832753, 138.278006],
+    [37.835099, 138.282293],
+    [37.83973, 138.286685],
+    [37.841863, 138.287688],
+    [37.844886, 138.292145],
+    [37.847275, 138.291968],
+    [37.849222, 138.292861],
+    [37.851566, 138.292988],
+    [37.858452, 138.302517],
+    [37.861132, 138.304596],
+    [37.864345, 138.304854],
+    [37.865158, 138.304194],
+    [37.865591, 138.301212],
+    [37.86647, 138.300501],
+    [37.870731, 138.301736],
+    [37.872396, 138.303102],
+    [37.87398, 138.303002],
+    [37.878194, 138.295134],
+    [37.881442, 138.291407],
+    [37.885339, 138.291585],
+    [37.886201, 138.293935],
+    [37.888643, 138.289416],
+    [37.89016, 138.290437],
+    [37.892603, 138.290645],
+    [37.895572, 138.289289],
+    [37.89765, 138.291134],
+    [37.899475, 138.287979],
+    [37.904806, 138.283473],
+    [37.907023, 138.283643],
+    [37.910025, 138.287908],
+    [37.916906, 138.29182],
+    [37.920835, 138.296274],
+    [37.927305, 138.301427],
+    [37.930357, 138.301443],
+    [37.936663, 138.307042],
+    [37.938655, 138.308255],
+    [37.940866, 138.308157],
+    [37.946541, 138.323974],
+    [37.950052, 138.330844],
+    [37.951883, 138.33262],
+    [37.955177, 138.333329],
+    [37.95693, 138.338392],
+    [37.959935, 138.341978],
+    [37.967579, 138.346857],
+    [37.973038, 138.348],
+    [37.981233, 138.347651],
+    [37.983626, 138.348827],
+    [37.985291, 138.34602],
+    [37.987153, 138.340267],
+    [37.992445, 138.335369],
+    [37.999274, 138.326451],
+    [38.000882, 138.321601],
+    [37.998962, 138.319284],
+    [38.001635, 138.31529],
+    [38.006289, 138.304324],
+    [38.007386, 138.298247],
+    [38.006887, 138.285073],
+    [38.005202, 138.279304],
+    [38.003479, 138.275365],
+    [38.001953, 138.273509],
+    [38.001859, 138.272037],
+    [38.004251, 138.268746],
+    [38.005002, 138.262926],
+    [38.008294, 138.258614],
+    [38.013658, 138.255845],
+    [38.01759, 138.248411],
+    [38.021461, 138.24476],
+    [38.022841, 138.242093],
+    [38.024573, 138.241689],
+    [38.024722, 138.239863],
+    [38.025948, 138.237283],
+    [38.024744, 138.235042],
+    [38.024506, 138.230955],
+    [38.022019, 138.226068],
+    [38.021689, 138.223792],
+    [38.018209, 138.22548],
+    [38.016834, 138.224815],
+    [38.015299, 138.225154],
+    [38.015305, 138.224597],
+    [38.015358, 138.225414],
+    [38.016655, 138.224803],
+    [38.018209, 138.22548],
+    [38.02025, 138.224646],
+    [38.019932, 138.225436],
+    [38.021085, 138.223816],
+    [38.021857, 138.223984],
+    [38.022019, 138.226068],
+    [38.024506, 138.230955],
+    [38.025148, 138.236456],
+    [38.025948, 138.237283],
+    [38.024702, 138.239401],
+    [38.024573, 138.241689],
+    [38.022841, 138.242093],
+    [38.021461, 138.24476],
+    [38.01759, 138.248411],
+    [38.013658, 138.255845],
+    [38.008294, 138.258614],
+    [38.005002, 138.262926],
+    [38.004251, 138.268746],
+    [38.001859, 138.272037],
+    [38.001864, 138.273304],
+    [38.003816, 138.275967],
+    [38.006734, 138.284226],
+    [38.007376, 138.298529],
+    [38.005869, 138.305583],
+    [37.999086, 138.319757],
+    [38.003314, 138.323301],
+    [38.004673, 138.332287],
+    [38.011496, 138.343878],
+    [38.015235, 138.359843],
+    [38.022086, 138.364056],
+    [38.025372, 138.368247],
+    [38.029848, 138.371176],
+    [38.041282, 138.381616],
+    [38.046747, 138.392823],
+    [38.049581, 138.395004],
+    [38.059516, 138.399679],
+    [38.069714, 138.409932],
+    [38.072465, 138.411332],
+    [38.077911, 138.416901],
+    [38.081838, 138.41922],
+    [38.084606, 138.422739],
+    [38.086225, 138.423812],
+    [38.087306, 138.426006],
+    [38.087774, 138.432407],
+    [38.081113, 138.435356],
+    [38.081549, 138.436507],
+    [38.079939, 138.438651],
+    [38.080765, 138.437595],
+    [38.081726, 138.438658],
   ];
 
   const previewCard = document.getElementById('map-photo-preview');
@@ -2161,7 +2518,11 @@
   const previewTitle = document.getElementById('map-preview-title');
   const previewText = document.getElementById('map-preview-text');
   const mapFrame = document.querySelector('.map-frame');
+  const spotIndex = document.getElementById('map-spot-index');
+  const spotList = document.getElementById('map-spot-list');
+  const spotMarkers = new window.Map();
   let activePreviewSpot = null;
+  let activeSpotNum = null;
 
   function clampNumber(value, min, max) {
     return Math.max(min, Math.min(value, max));
@@ -2180,21 +2541,36 @@
     const margin = 22;
     const cardWidth = previewCard.offsetWidth || 300;
     const cardHeight = previewCard.offsetHeight || 250;
+    const indexWidth = spotIndex?.offsetWidth || 0;
+    const indexHeight = spotIndex?.offsetHeight || 0;
+    const reserveIndex = indexWidth && point.y < indexHeight + margin * 2;
+    const rightLimit = mapSize.x - cardWidth - margin - (reserveIndex ? indexWidth + margin : 0);
     let left = point.x + 28;
     let top = point.y - cardHeight / 2;
 
-    if (left + cardWidth > mapSize.x - margin) {
+    if (left > rightLimit) {
       left = point.x - cardWidth - 28;
     }
 
-    left = clampNumber(left, margin, mapSize.x - cardWidth - margin);
+    left = clampNumber(left, margin, Math.max(margin, rightLimit));
     top = clampNumber(top, margin, mapSize.y - cardHeight - margin);
     previewCard.style.setProperty('--preview-left', `${left}px`);
     previewCard.style.setProperty('--preview-top', `${top}px`);
   }
 
+  function setActiveSpot(spot) {
+    activeSpotNum = spot.num;
+    spotList?.querySelectorAll('.map-spot-button').forEach((button) => {
+      button.classList.toggle('is-active', Number(button.dataset.spotNum) === activeSpotNum);
+    });
+    spotMarkers.forEach((marker, num) => {
+      marker.getElement()?.classList.toggle('is-active', num === activeSpotNum);
+    });
+  }
+
   function showSpotPreview(spot) {
     activePreviewSpot = spot;
+    setActiveSpot(spot);
     previewCard.href = spot.album;
     previewImg.onload = () => {
       if (activePreviewSpot === spot) positionSpotPreview(spot);
@@ -2209,6 +2585,42 @@
     previewCard.setAttribute('aria-hidden', 'false');
     previewCard.setAttribute('tabindex', '0');
     window.requestAnimationFrame(() => positionSpotPreview(spot));
+  }
+
+  function focusSpot(spot) {
+    map.flyTo(spot.coords, spot.focusZoom || 14, {
+      animate: true,
+      duration: 0.85,
+      easeLinearity: 0.25
+    });
+    showSpotPreview(spot);
+  }
+
+  function buildSpotIndex() {
+    if (!spotList) return;
+
+    actualSpots.forEach((spot) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'map-spot-button';
+      button.dataset.spotNum = String(spot.num);
+      button.setAttribute('aria-label', `${spot.name}へ地図を移動`);
+
+      const number = document.createElement('span');
+      number.className = 'map-spot-number';
+      number.style.background = spot.color;
+      number.textContent = String(spot.num).padStart(2, '0');
+
+      const name = document.createElement('span');
+      name.className = 'map-spot-name';
+      name.textContent = spot.name.replace(' 出発', '').replace(' 帰着', '');
+
+      button.append(number, name);
+      button.addEventListener('mouseenter', () => showSpotPreview(spot));
+      button.addEventListener('focus', () => showSpotPreview(spot));
+      button.addEventListener('click', () => focusSpot(spot));
+      spotList.appendChild(button);
+    });
   }
 
   // === Marker factory ===
@@ -2244,26 +2656,33 @@
         opacity: 0.92
       });
 
-    marker.on('mouseover click', () => showSpotPreview(spot));
+    marker.on('mouseover', () => showSpotPreview(spot));
+    marker.on('click', () => focusSpot(spot));
     return marker;
   }
 
   // === Add markers & polylines ===
-  actualSpots.forEach(s => createMarker(s).addTo(map));
+  actualSpots.forEach((spot) => {
+    const marker = createMarker(spot).addTo(map);
+    spotMarkers.set(spot.num, marker);
+  });
+  buildSpotIndex();
 
   // 毛筆感のある二重線ルート（滲み層＋主線）
-  L.polyline(actualSpots.map(s => s.coords), {
+  L.polyline(actualRouteCoords, {
     color: '#c4963a',
     weight: 9,
     opacity: 0.11,
+    interactive: false,
     lineCap: 'round',
     lineJoin: 'round'
   }).addTo(map);
-  L.polyline(actualSpots.map(s => s.coords), {
+  L.polyline(actualRouteCoords, {
     color: '#b88a3a',
     weight: 2.5,
     opacity: 0.82,
     dashArray: '10, 7',
+    interactive: false,
     lineCap: 'round',
     lineJoin: 'round'
   }).addTo(map);
