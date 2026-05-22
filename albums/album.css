@@ -120,6 +120,7 @@ a { color: inherit; }
   box-shadow: 0 22px 48px rgba(31, 26, 23, 0.18);
   background: var(--paper-dark);
   overflow: hidden;
+  cursor: zoom-in;
 }
 
 .hero-photo img {
@@ -156,6 +157,7 @@ a { color: inherit; }
   border: 1px solid var(--rule);
   background: var(--paper-dark);
   box-shadow: 0 10px 24px rgba(31, 26, 23, 0.08);
+  cursor: zoom-in;
 }
 
 .photo-card.feature {
@@ -220,6 +222,93 @@ a { color: inherit; }
   letter-spacing: 0.18em;
 }
 
+.album-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 76px;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(18px, 4vw, 54px);
+  background:
+    linear-gradient(180deg, rgba(20, 40, 63, 0.88), rgba(31, 26, 23, 0.92)),
+    rgba(31, 26, 23, 0.9);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.32s ease, visibility 0.32s ease;
+}
+
+.album-viewer.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.album-viewer__stage {
+  min-width: 0;
+  max-width: min(1180px, 100%);
+  justify-self: center;
+}
+
+.album-viewer__image {
+  display: block;
+  max-width: 100%;
+  max-height: 78svh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  border: 1px solid rgba(243, 236, 224, 0.28);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  background: var(--paper-dark);
+}
+
+.album-viewer__caption {
+  margin-top: 14px;
+  text-align: center;
+  font-family: 'Klee One', serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: rgba(243, 236, 224, 0.78);
+}
+
+.album-viewer__button,
+.album-viewer__close {
+  appearance: none;
+  border: 1px solid rgba(243, 236, 224, 0.34);
+  background: rgba(243, 236, 224, 0.08);
+  color: var(--paper);
+  font-family: 'Klee One', serif;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.album-viewer__button {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  justify-self: center;
+  font-size: 22px;
+}
+
+.album-viewer__close {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  padding: 8px 12px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+.album-viewer__button:hover,
+.album-viewer__close:hover {
+  background: rgba(243, 236, 224, 0.18);
+  border-color: rgba(243, 236, 224, 0.62);
+  transform: translateY(-1px);
+}
+
 .site-footer {
   text-align: center;
   padding: 30px 24px 56px;
@@ -261,6 +350,22 @@ a { color: inherit; }
   .photo-card img {
     height: auto;
     aspect-ratio: 4 / 3;
+  }
+
+  .album-viewer {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    gap: 6px;
+    padding: 54px 12px 28px;
+  }
+
+  .album-viewer__button {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .album-viewer__image {
+    max-height: 72svh;
   }
 
   .album-note {

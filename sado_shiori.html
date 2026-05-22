@@ -88,10 +88,10 @@
 
   /* === Cover === */
   .cover {
-    min-height: 100vh;
+    min-height: 100svh;
     display: grid;
     place-items: center;
-    padding: clamp(18px, 3vw, 42px);
+    padding: 0;
     position: fixed;
     inset: 0;
     z-index: 1000;
@@ -143,39 +143,39 @@
   }
 
   .cover-sheet {
-    width: min(1540px, calc(100vw - clamp(28px, 6vw, 88px)));
-    min-height: min(760px, calc(100svh - clamp(36px, 6vw, 84px)));
+    width: 100vw;
+    height: 100svh;
     display: grid;
-    grid-template-columns: minmax(360px, 0.86fr) minmax(460px, 1.14fr);
-    gap: clamp(28px, 4vw, 64px);
+    grid-template-columns: minmax(360px, 34vw) minmax(640px, 1fr);
+    gap: 0;
     align-items: stretch;
     position: relative;
     z-index: 1;
-    padding: clamp(24px, 4vw, 54px);
+    padding: 0;
     background:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.18)),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.12)),
       rgba(243, 236, 224, 0.9);
-    border: 1px solid rgba(31, 26, 23, 0.22);
-    box-shadow: 0 24px 70px rgba(31, 26, 23, 0.18);
     overflow: hidden;
   }
 
   .cover-sheet::before {
     content: '';
     position: absolute;
-    top: clamp(22px, 4vw, 52px);
-    bottom: clamp(22px, 4vw, 52px);
-    left: calc(42% + clamp(4px, 1vw, 14px));
+    top: clamp(24px, 4vw, 52px);
+    bottom: clamp(24px, 4vw, 52px);
+    left: 34vw;
     width: 1px;
     background: linear-gradient(180deg, transparent, rgba(31, 26, 23, 0.22), transparent);
+    z-index: 5;
   }
 
   .cover-sheet::after {
     content: '';
     position: absolute;
-    inset: 12px;
+    inset: clamp(16px, 2vw, 28px);
     border: 1px solid rgba(31, 26, 23, 0.12);
     pointer-events: none;
+    z-index: 6;
   }
 
   .cover-stamp {
@@ -207,7 +207,10 @@
     gap: clamp(20px, 3vw, 34px);
     position: relative;
     z-index: 2;
-    padding-left: clamp(24px, 3vw, 44px);
+    padding: clamp(74px, 8vh, 112px) clamp(34px, 4vw, 72px) clamp(54px, 7vh, 88px) clamp(64px, 5vw, 96px);
+    background:
+      linear-gradient(180deg, rgba(243, 236, 224, 0.96), rgba(232, 223, 206, 0.9)),
+      var(--paper);
   }
 
   .cover-meta {
@@ -245,7 +248,7 @@
   }
 
   .cover-title {
-    font-size: clamp(66px, 8.6vw, 136px);
+    font-size: clamp(58px, 6.8vw, 112px);
     font-weight: 800;
     line-height: 0.92;
     color: var(--indigo-deep);
@@ -277,7 +280,7 @@
   }
 
   .cover-lead {
-    max-width: 460px;
+    max-width: 500px;
     color: rgba(31, 26, 23, 0.72);
     font-size: 14px;
     line-height: 2;
@@ -333,12 +336,10 @@
   .cover-scene {
     position: relative;
     z-index: 2;
-    min-height: 430px;
     align-self: stretch;
-    border: 1px solid rgba(31, 26, 23, 0.24);
+    min-height: 100svh;
     background: var(--paper-dark);
     overflow: hidden;
-    box-shadow: 0 18px 42px rgba(31, 26, 23, 0.14);
   }
 
   .cover-scene img {
@@ -347,8 +348,8 @@
     min-height: 100%;
     display: block;
     object-fit: cover;
-    object-position: center 52%;
-    filter: saturate(0.78) contrast(0.96) sepia(0.1);
+    object-position: center center;
+    filter: saturate(0.72) contrast(0.94) sepia(0.12);
   }
 
   .cover-scene::before {
@@ -356,7 +357,7 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(20, 40, 63, 0.26), transparent 38%, rgba(243, 236, 224, 0.12)),
+      linear-gradient(90deg, rgba(20, 40, 63, 0.38), transparent 44%, rgba(243, 236, 224, 0.08)),
       linear-gradient(0deg, rgba(31, 26, 23, 0.24), transparent 38%);
     pointer-events: none;
   }
@@ -385,7 +386,7 @@
 
   .cover-scroll {
     position: absolute;
-    left: clamp(24px, 4vw, 52px);
+    left: clamp(64px, 5vw, 96px);
     bottom: clamp(24px, 4vw, 48px);
     z-index: 3;
     font-family: 'Klee One', serif;
@@ -447,13 +448,14 @@
     box-shadow: 0 18px 42px rgba(31, 26, 23, 0.14);
   }
   #leaflet-map .leaflet-tile-pane {
-    filter: saturate(0.84) contrast(0.96) sepia(0.08);
+    filter: saturate(0.62) contrast(0.94) sepia(0.16);
   }
 
   .map-photo-preview {
     position: absolute;
-    top: 50%;
-    right: clamp(18px, 3vw, 42px);
+    top: var(--preview-top, 24px);
+    left: var(--preview-left, auto);
+    right: auto;
     width: min(300px, calc(100% - 36px));
     z-index: 600;
     display: block;
@@ -466,7 +468,7 @@
     box-shadow: 0 18px 40px rgba(31, 26, 23, 0.2);
     opacity: 0;
     pointer-events: none;
-    transform: translateY(calc(-50% + 14px)) rotate(0.35deg);
+    transform: translateY(14px) rotate(0.35deg);
     transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
   .map-photo-preview::before {
@@ -481,7 +483,7 @@
   .map-photo-preview.is-visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(-50%) rotate(0.35deg);
+    transform: translateY(0) rotate(0.35deg);
     box-shadow: 0 24px 54px rgba(31, 26, 23, 0.24);
   }
   .map-photo-preview::after {
@@ -1119,6 +1121,9 @@
     max-width: 1060px;
     margin: 0 auto;
   }
+  .tips .section-subtitle {
+    padding-left: 0;
+  }
 
   .tip-list {
     display: grid;
@@ -1275,9 +1280,11 @@
     .cover-sheet {
       width: min(760px, calc(100vw - 28px));
       min-height: calc(100svh - 28px);
+      height: auto;
       grid-template-columns: 1fr;
       gap: 18px;
       padding: 28px 24px;
+      border: 1px solid rgba(31, 26, 23, 0.18);
     }
     .cover-sheet::before {
       left: 24px;
@@ -1289,7 +1296,7 @@
       background: linear-gradient(90deg, transparent, rgba(31, 26, 23, 0.2), transparent);
     }
     .cover-main {
-      padding-left: 26px;
+      padding: 28px 0 0 26px;
       gap: 20px;
     }
     .cover-title {
@@ -1321,7 +1328,7 @@
       gap: 16px;
     }
     .cover-main {
-      padding-left: 18px;
+      padding: 22px 0 0 18px;
     }
     .cover-meta {
       left: 20px;
@@ -1392,6 +1399,8 @@
       left: 12px;
       bottom: 12px;
       width: auto;
+      --preview-left: auto;
+      --preview-top: auto;
       transform: translateY(10px);
     }
     .map-photo-preview.is-visible {
@@ -1673,7 +1682,6 @@
 <div class="tips story-slide" id="notes">
   <div class="tips-inner">
     <div class="section-num">―― 〇三 ／ NOTES</div>
-    <h2 class="section-title">旅の整理。</h2>
     <div class="section-subtitle">予定から実録へ直したポイント</div>
 
     <div class="tip-list">
@@ -1915,7 +1923,7 @@
     zoomDelta: 0.5
   }).setView([38.05, 138.35], 9);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 18
@@ -1996,17 +2004,55 @@
   const previewMeta = document.getElementById('map-preview-meta');
   const previewTitle = document.getElementById('map-preview-title');
   const previewText = document.getElementById('map-preview-text');
+  const mapFrame = document.querySelector('.map-frame');
+  let activePreviewSpot = null;
+
+  function clampNumber(value, min, max) {
+    return Math.max(min, Math.min(value, max));
+  }
+
+  function positionSpotPreview(spot) {
+    if (!previewCard || !mapFrame || !spot) return;
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      previewCard.style.removeProperty('--preview-left');
+      previewCard.style.removeProperty('--preview-top');
+      return;
+    }
+
+    const point = map.latLngToContainerPoint(spot.coords);
+    const mapSize = map.getSize();
+    const margin = 22;
+    const cardWidth = previewCard.offsetWidth || 300;
+    const cardHeight = previewCard.offsetHeight || 250;
+    let left = point.x + 28;
+    let top = point.y - cardHeight / 2;
+
+    if (left + cardWidth > mapSize.x - margin) {
+      left = point.x - cardWidth - 28;
+    }
+
+    left = clampNumber(left, margin, mapSize.x - cardWidth - margin);
+    top = clampNumber(top, margin, mapSize.y - cardHeight - margin);
+    previewCard.style.setProperty('--preview-left', `${left}px`);
+    previewCard.style.setProperty('--preview-top', `${top}px`);
+  }
 
   function showSpotPreview(spot) {
+    activePreviewSpot = spot;
     previewCard.href = spot.album;
+    previewImg.onload = () => {
+      if (activePreviewSpot === spot) positionSpotPreview(spot);
+    };
     previewImg.src = spot.image;
     previewImg.alt = `${spot.name}のアルバム写真`;
     previewMeta.textContent = `${String(spot.num).padStart(2, '0')} / ${spot.preview}`;
     previewTitle.textContent = spot.name;
     previewText.textContent = spot.desc;
+    positionSpotPreview(spot);
     previewCard.classList.add('is-visible');
     previewCard.setAttribute('aria-hidden', 'false');
     previewCard.setAttribute('tabindex', '0');
+    window.requestAnimationFrame(() => positionSpotPreview(spot));
   }
 
   // === Marker factory ===
@@ -2085,12 +2131,14 @@
   const mapPadding = window.matchMedia('(max-width: 640px)').matches ? [22, 22] : [18, 26];
   map.fitBounds(sadoBounds, { padding: mapPadding });
   window.setTimeout(() => map.invalidateSize(), 2600);
+  map.on('zoom move resize', () => positionSpotPreview(activePreviewSpot));
 
   // Click to enable scroll wheel
   map.on('click', () => map.scrollWheelZoom.enable());
   map.on('mouseout', () => map.scrollWheelZoom.disable());
 
   document.querySelector('.map-frame').addEventListener('mouseleave', () => {
+    activePreviewSpot = null;
     previewCard.classList.remove('is-visible');
     previewCard.setAttribute('aria-hidden', 'true');
     previewCard.setAttribute('tabindex', '-1');
